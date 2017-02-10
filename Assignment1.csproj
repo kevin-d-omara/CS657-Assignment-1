@@ -41,5 +41,8 @@
     <Compile Include="GridParameters.cs" />
     <Compile Include="Vector2.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

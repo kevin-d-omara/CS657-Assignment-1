@@ -1,4 +1,5 @@
 ﻿using System;
+using System​.Numerics;
 using System.Collections.Generic;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
@@ -44,10 +45,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             // Create outer walls and floors.
             CreateEmptyBoard();
 
-            // Create a list including valid board positions, excludes outer
-            // wall, start position, and end position.
-            InitializeValidMoves();
-
             // Add Rocks, Pits, etc. to the board.
             PlaceObstacles();
         }
@@ -73,14 +70,36 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             }
         }
 
-        private void InitializeValidMoves()
-        {
-
-        }
-
         private void PlaceObstacles()
         {
+            // Copy list of valid positions to place obstacles.
+            List<Vector2> validPositions = new List<Vector2>();
+            foreach (Vector2 pos in validObstaclePositions)
+            {
+                validPositions.Add(new Vector2(pos.x, pos.y));
+            }
+            validPositions.Remove(startPos);
+            validPositions.Remove(goalPos);
 
+            // Place obstacles on grid.
+            int numObstacles = (int)(width * height * obstacleDensity);
+            numObstacles = Math.Min(numObstacles, width * height - 2);
+            Random random = new Random();
+            for (int i = 0; i < numObstacles; ++i)
+            {
+                // Select random position on grid.
+                int randomIndex = random.Next(0, validPositions.Count);
+                Vector2 randPos = validPositions[randomIndex];
+
+                // Prevent position from being used twice.
+                validPositions.RemoveAt(randomIndex);
+
+                // Select random obstacle type.
+                randomIndex = random.Next(0, obstacleTypes.Count);
+                Cell.Type randType = obstacleTypes[randomIndex];
+
+                Position[(int)randPos.x, (int)randPos.y] = new Cell(randType);
+            }
         }
 
         // Print a text version of the grid.

@@ -7,8 +7,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     {
         public static void Main(string[] args)
         {
-            int width = 3;
-            int height = 3;
+            int width = 8;
+            int height = 8;
 
             int startOffset = 0;
             int goalOffset = 0;
@@ -16,7 +16,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Vector2 goalPos = new Vector2(width - goalOffset, height - goalOffset);
 
             float obstacleDensity = .25f;
-            List<Cell.Type> obstacleTypes = new List<Cell.Type> { Cell.Type.Floor };
+            List<Cell.Type> obstacleTypes = new List<Cell.Type> { Cell.Type.Wall };
 
             GridParameters gridParams = new GridParameters(
                 width, height, startPos, goalPos, obstacleDensity, obstacleTypes);

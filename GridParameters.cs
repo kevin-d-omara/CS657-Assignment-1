@@ -27,19 +27,18 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// <param name="width">Width of the grid.</param>
         /// <param name="height">Height of the grid.</param>
         /// <param name="startPosition">Rover start position w/ top left at [1,1].</param>
-        /// <param name="endPosition">Rover goal position w/ bottom right at [width, height].</param>
+        /// <param name="goalPosition">Rover goal position w/ bottom right at [width, height].</param>
         /// <param name="obstacleDensity">Percent of tiles with an obstacle. (value = 0.0 to 1.0)</param>
         /// <param name="obstacleTypes">Types of obstacles to randomize between, i.e. Rock, Pit, etc.</param>
         public GridParameters(
             int width, int height,
-            Vector2 startPosition, Vector2 endPosition,
+            Vector2 startPosition, Vector2 goalPosition,
             float obstacleDensity,List<Cell.Type> obstacleTypes)
         {
             this.width = width;
-            this.width = width;
             this.height = height;
-            this.startPos = new Vector2(startPos.x, startPos.y);
-            this.goalPos = new Vector2(goalPos.x, goalPos.y);
+            this.startPos = new Vector2(startPosition.x, startPosition.y);
+            this.goalPos = new Vector2(goalPosition.x, goalPosition.y);
             this.obstacleDensity = obstacleDensity;
             this.obstacleTypes = new List<Cell.Type>();
             foreach(Cell.Type type in obstacleTypes)

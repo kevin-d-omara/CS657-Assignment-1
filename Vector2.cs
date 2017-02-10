@@ -5,8 +5,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     // Representation of 2D vectors and points.
     // Limited reproduction of the Vector2 class offered by Unity3D:
-    // https://docs.unity3d.com/ScriptReference/Vector2.html
-    public class Vector2
+    //      https://docs.unity3d.com/ScriptReference/Vector2.html
+    public class Vector2 : IEquatable<Vector2>
     {
         public readonly float x;
         public readonly float y;
@@ -15,6 +15,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             x = X;
             y = Y;
+        }
+
+        public bool Equals(Vector2 other)
+        {
+            return (other.x == x) && (other.y == y);
         }
     }
 }

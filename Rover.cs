@@ -28,5 +28,20 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
 
         }
+
+        public void Update()
+        {
+            // DetectWithSonar()
+            // DecideOnMove()
+            MakeMove();
+        }
+
+        private void MakeMove()
+        {
+            // update Position
+            // update Facing
+            ++MoveCount;
+            // update Moves
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Grid grid = new Grid(gridParams);
 
             grid.Display();
-
+            
             Console.ReadKey();  // stop terminal from closing
         }
     }

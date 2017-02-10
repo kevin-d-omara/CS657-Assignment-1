@@ -6,11 +6,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class GridParameters
     {
         // All fields set to default value.
-        public int width = 30;
-        public int height = 30;
+        public int width = 8;
+        public int height = 8;
 
-        public Vector2 startPos = new Vector2(1, 1);
-        public Vector2 goalPos = new Vector2(30, 30);
+        public Vector2 startPosition = new Vector2(1, 1);
+        public Vector2 goalPosition = new Vector2(30, 30);
 
         public float obstacleDensity = .25f;
         public List<Cell.Type> obstacleTypes = new List<Cell.Type>
@@ -37,8 +37,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             this.width = width;
             this.height = height;
-            this.startPos = new Vector2(startPosition.x, startPosition.y);
-            this.goalPos = new Vector2(goalPosition.x, goalPosition.y);
+            this.startPosition = new Vector2(startPosition.x, startPosition.y);
+            this.goalPosition = new Vector2(goalPosition.x, goalPosition.y);
             this.obstacleDensity = obstacleDensity;
             this.obstacleTypes = new List<Cell.Type>();
             foreach(Cell.Type type in obstacleTypes)

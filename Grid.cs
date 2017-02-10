@@ -18,8 +18,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // Start Position of Rover, and Goal Position of Rover:
         //      - top left @ [1,1]
         //      - bottom right @ [width, height]
-        public readonly Vector2 startPos;
-        public readonly Vector2 goalPos;
+        public readonly Vector2 startPosition;
+        public readonly Vector2 goalPosition;
 
         // Percent of cells with an obstacle (0.0 to 1.0).
         public readonly float obstacleDensity;
@@ -33,8 +33,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             width = gParms.width;
             height = gParms.height;
-            startPos = new Vector2(gParms.startPos.x, gParms.startPos.y);
-            goalPos = new Vector2(gParms.goalPos.x, gParms.goalPos.y);
+            startPosition = new Vector2(gParms.startPosition.x, gParms.startPosition.y);
+            goalPosition = new Vector2(gParms.goalPosition.x, gParms.goalPosition.y);
             obstacleDensity = gParms.obstacleDensity;
             obstacleTypes = new List<Cell.Type>();
             foreach (Cell.Type type in gParms.obstacleTypes)
@@ -78,8 +78,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 validPositions.Add(new Vector2(pos.x, pos.y));
             }
-            validPositions.Remove(startPos);
-            validPositions.Remove(goalPos);
+            validPositions.Remove(startPosition);
+            validPositions.Remove(goalPosition);
 
             // Place obstacles on grid.
             int numObstacles = (int)(width * height * obstacleDensity);
@@ -103,14 +103,21 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         }
 
         // Print a text version of the grid.
-        public void Display()
+        public void Display(Vector2 roverPosition)
         {
             {
                 for (int y = 0; y <= height + 1; ++y)
                 {
                     for (int x = 0; x <= width + 1; ++x)
                     {
-                        Console.Write(Position[x, y].image);
+                        if (roverPosition.x == x && roverPosition.y == y)
+                        {
+                            Console.Write('R');
+                        }
+                        else
+                        {
+                            Console.Write(Position[x, y].image);
+                        }
                     }
                     Console.WriteLine();
                 }

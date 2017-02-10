@@ -9,37 +9,40 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 10;
+        public const int MoveLimit = 1;
 
         private Grid grid;
         private Rover rover;
 
         public SimulationManager() { }
 
-        public void BeginSimulation()
+        public void StartSimulation()
         {
             // Setup
-            GridParameters gParams = GetGridParameters();
-            grid = new Grid(gParams);
-            rover = new Rover();
+            GridParameters gridParameters = GetGridParameters();
+            grid = new Grid(gridParameters);
+
+            // Rover database starts with no obstacles.
+            gridParameters.obstacleDensity = 0f;
+            rover = new Rover(gridParameters);
 
             // Simulation Loop
             while (true)
             {
-                // Exit condition.
-                if (rover.Position == grid.goalPos)
+                rover.Update();
+                grid.Display(rover.Position);
+
+                // Exit conditions.
+                if (rover.Position == grid.goalPosition)
                 {
                     Console.WriteLine("Goal Reached!");
                     break;
                 }
-                if (rover.MoveCount > MoveLimit)
+                if (rover.MoveCount >= MoveLimit)
                 {
                     Console.WriteLine("Move Limit Reached.");
                     break;
                 }
-
-                rover.Update();
-
             }
         }
 

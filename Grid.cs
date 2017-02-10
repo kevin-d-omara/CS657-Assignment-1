@@ -5,18 +5,21 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     public class Grid
     {
-        // dimensions discluding buffer
+        // Dimensions discluding buffer.
         public readonly int width;
         public readonly int height;
         
-        // width of the 'wall' cell border
+        // Width of the 'wall' cell border.
         public const int buffer = 1;
 
-        // positions discluding buffer
+        // Positions discluding buffer: top left @ [1,1]
+        //                              bottom right @ [width, height]
         public readonly Vector2 startPos;
         public readonly Vector2 goalPos;
 
+        // Percent of cells with an obstacle (0.0 to 1.0).
         public readonly float obstacleDensity;
+        // Obstacle types to randomize between.
         public readonly List<Cell.Type> obstacleTypes;
 
         public Grid(GridParameters gParms)
@@ -31,6 +34,31 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 obstacleTypes.Add(type);
             }
+
+            // Create outer walls and floors.
+            CreateEmptyBoard();
+
+            // Create a list including valid board positions, excludes outer
+            // wall, start position, and end position.
+            InitializeValidMoves();
+
+            // Add Rocks, Pits, etc. to the board.
+            PlaceObstacles();
+        }
+
+        private void CreateEmptyBoard()
+        {
+
+        }
+
+        private void InitializeValidMoves()
+        {
+
+        }
+
+        private void PlaceObstacles()
+        {
+
         }
     }
 }

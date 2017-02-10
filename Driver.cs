@@ -7,6 +7,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     {
         public static void Main(string[] args)
         {
+            SimulationManager simulationManager = new SimulationManager();
+
+            simulationManager.BeginSimulation();
+
             int width = 8;
             int height = 8;
 
@@ -23,8 +27,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Grid grid = new Grid(gridParams);
 
             grid.Display();
-
-
 
             Console.ReadKey();  // stop terminal from closing
         }

@@ -101,27 +101,5 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 Position[(int)randPos.x, (int)randPos.y] = new Cell(randType);
             }
         }
-
-        // Print a text version of the grid.
-        public void Display(Vector2 roverPosition)
-        {
-            {
-                for (int y = 0; y <= height + 1; ++y)
-                {
-                    for (int x = 0; x <= width + 1; ++x)
-                    {
-                        if (roverPosition.x == x && roverPosition.y == y)
-                        {
-                            Console.Write('R');
-                        }
-                        else
-                        {
-                            Console.Write(Position[x, y].image);
-                        }
-                    }
-                    Console.WriteLine();
-                }
-            }
-        }
     }
 }

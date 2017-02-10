@@ -10,7 +10,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public int height = 8;
 
         public Vector2 startPosition = new Vector2(1, 1);
-        public Vector2 goalPosition = new Vector2(30, 30);
+        public Vector2 goalPosition;
 
         public float obstacleDensity = .25f;
         public List<Cell.Type> obstacleTypes = new List<Cell.Type>
@@ -19,7 +19,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// <summary>
         ///  Default constructor: all fields initialized to default values (see class definition).
         /// </summary>
-        public GridParameters() { }
+        public GridParameters() { goalPosition = new Vector2(width, height); }
 
         /// <summary>
         /// Parameterized constructor.

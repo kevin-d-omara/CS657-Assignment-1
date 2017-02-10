@@ -9,7 +9,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 1;
+        public const int MoveLimit = 5;
 
         private Grid grid;
         private Rover rover;
@@ -30,17 +30,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             while (true)
             {
                 rover.Update();
-                grid.Display(rover.Position);
+                DisplayProgress();
 
                 // Exit conditions.
                 if (rover.Position == grid.goalPosition)
                 {
-                    Console.WriteLine("Goal Reached!");
+                    Console.WriteLine("-----> Goal Reached!");
                     break;
                 }
                 if (rover.MoveCount >= MoveLimit)
                 {
-                    Console.WriteLine("Move Limit Reached.");
+                    Console.WriteLine("-----> Move Limit Reached.");
                     break;
                 }
             }
@@ -50,6 +50,41 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             // Prompt user for GridParameters
             return new GridParameters();
+        }
+
+        /// <summary>
+        /// Display a text version of the grid, with markers for the Rover 'R',
+        /// Goal 'G', Obstacles 'X', '_', etc..
+        /// Also display status information (# moves/ limit, etc.)
+        /// </summary>
+        private void DisplayProgress()
+        {
+            for (int y = 0; y <= grid.height + 1; ++y)
+            {
+                for (int x = 0; x <= grid.width + 1; ++x)
+                {
+                    char image;
+                    if (x == rover.Position.x && y == rover.Position.y)
+                    {
+                        image = 'R';
+                    }
+                    else if (x == grid.goalPosition.x && y == grid.goalPosition.y)
+                    {
+                        image = 'G';
+                    }
+                    else
+                    {
+                        image = grid.Position[x, y].image;
+                    }
+                    Console.Write(image);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("Position: [{0},{1}]", rover.Position.x,
+                rover.Position.y);
+            Console.WriteLine("Facing: {0}", rover.Facing);
+            Console.WriteLine("Move: {0}/{1}", rover.MoveCount, MoveLimit);
+            Console.WriteLine();
         }
     }
 }

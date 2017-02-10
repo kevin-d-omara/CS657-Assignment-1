@@ -55,15 +55,15 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // Create a 2D array of 'floor' cells w/ a 'wall' cell border.
         private void CreateEmptyBoard()
         {
-            Position = new Cell[width, height];
-            for (int y = 0; y < height + 1; ++y)
+            Position = new Cell[width + 2 * buffer, height + 2 * buffer];
+            for (int y = 0; y <= height + 1; ++y)
             {
-                for (int x = 0; x < width + 1; ++x)
+                for (int x = 0; x <= width + 1; ++x)
                 {
                     if (x == 0 || x == width + 1 || y == 0 || y == height + 1)
                     {
-                        Position[x, y] = new Cell(Cell.Type.Floor);
-    }
+                        Position[x, y] = new Cell(Cell.Type.Wall);
+                    }
                     else
                     {
                         Position[x, y] = new Cell(Cell.Type.Floor);
@@ -81,6 +81,21 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private void PlaceObstacles()
         {
 
+        }
+
+        // Print a text version of the grid.
+        public void Display()
+        {
+            {
+                for (int y = 0; y <= height + 1; ++y)
+                {
+                    for (int x = 0; x <= width + 1; ++x)
+                    {
+                        Console.Write(Position[x, y].image);
+                    }
+                    Console.WriteLine();
+                }
+            }
         }
     }
 }

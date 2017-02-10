@@ -9,7 +9,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 5;
+        public const int MoveLimit = 1;
 
         private Grid grid;
         private Rover rover;
@@ -27,6 +27,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             rover = new Rover(gridParameters);
 
             // Simulation Loop
+            DisplayProgress();
             while (true)
             {
                 rover.Update();

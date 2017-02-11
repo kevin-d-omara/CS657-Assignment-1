@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
@@ -10,6 +11,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class SimulationManager
     {
         public const int MoveLimit = 30;
+        public const bool waitForInput = false;
 
         private Grid grid;
         private Rover rover;
@@ -44,6 +46,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     Console.WriteLine("-----> Move Limit Reached.");
                     break;
                 }
+
+                if (waitForInput) Console.ReadKey();
             }
         }
 

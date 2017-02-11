@@ -10,7 +10,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public Bearing Facing { get; private set; }
 
         public int MoveCount { get; private set; } = 0;
-        public Stack<Vector2> Moves { get; private set; }
+        public Stack<Vector2> PreviousMoves { get; private set; }
             = new Stack<Vector2>();
 
         // Database
@@ -31,7 +31,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Position = gridParameters.startPosition;
             
             // !TODO: replace South w/ direction facing goal
-            Facing = Bearing.South;
+            Facing = Bearing.SouthEast;
             
         }
 
@@ -39,20 +39,22 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             // DetectWithSonar()
             // DecideOnMove()
-            MakeMove();
+            MakeMove(Direction.Forward);
         }
 
-        private void MakeMove()
+        private void MakeMove(Direction direction)
         {
-            Moves.Push(Position);
+            // record action
+            PreviousMoves.Push(Position);
             ++MoveCount;
 
             // update Position
-            Vector2 offset = Utility.ConvertBearingToCoordinateOffset(Facing);
+            Bearing moveBearing = Facing.ToBearing(direction);
+            Vector2 offset = moveBearing.ToCoordinateOffset();
             Position = new Vector2(Position.x + offset.x, Position.y + offset.y);
 
             // update Facing
-
+            Facing = moveBearing;
         }
     }
 }

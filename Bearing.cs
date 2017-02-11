@@ -3,33 +3,35 @@ using System.Collections.Generic;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
 {
-    // Bearing is the absolute frame of reference.
-    // North is up (^) and East is right (>).
+    /// <summary>
+    /// Bearing is the absolute frame of reference. North is up (^) and East is
+    /// right (>).
+    /// </summary>
     public enum Bearing
     {
         North = 0, NorthEast = 45, East = 90, SouthEast = 135,
         South = 180, SouthWest = 225, West = 270, NorthWest = 315
     }
 
-    // Direction is relative to the Rover's Facing.
-    // I.e. if Facing is South, FrontRight is SouthWest.
+    /// <summary>
+    /// Direction is relative to the Rover's Facing. I.e. is Facing is South,
+    /// ForwardRight is SouthWest.
+    /// </summary>
     public enum Direction
     {
-        Front = 0, FrontRight = 45, Right = 90, BackRight = 135,
-        Back = 180, BackLeft = 225, Left = 270, FrontLeft = 315
+        Forward = 0, ForwardRight = 45, SideRight = 90, BackwardRight = 135,
+        Backward = 180, BackwardLeft = 225, SideLeft = 270, ForwardLeft = 315
     }
 
-    public static class Utility
+    public static class BearingMethods
     {
-        public static Bearing TempName(Bearing bearing, Direction direction)
-        {
-            //int finalFacing = (bearing + direction);
-            return Bearing.North;
-        }
-
-        // Convert from Bearing Space (North is up)
-        //           to Screen Space  (-X-axis is up)
-        public static Vector2 ConvertBearingToCoordinateOffset(Bearing bearing)
+        /// <summary>
+        /// Converts from Bearing Space (North is up, East is right) to Screen
+        /// Space (+X is right, +Y is down).
+        /// </summary>
+        /// <param name="bearing">Bearing to convert to the coordinate offset.</param>
+        /// <returns>Vector holding the relative offset.</returns>
+        public static Vector2 ToCoordinateOffset(this Bearing bearing)
         {
             Vector2 coordinateOffset;
             switch (bearing)
@@ -64,6 +66,20 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     break;
             }
             return coordinateOffset;
+        }
+
+        /// <summary>
+        /// Converts from the Rover's initial absolute Bearing and relative
+        /// Direction to the final absolute Bearing. I.e. South & ForwardRight
+        /// => SouthWest.
+        /// </summary>
+        /// <param name="bearing">Rover's initial bearing.</param>
+        /// <param name="direction">Rover's desired relative direction.</param>
+        /// <returns>Bearing to move towards.</returns>
+        public static Bearing ToBearing(this Bearing bearing, Direction direction)
+        {
+            int finalFacing = ((int)bearing + (int)direction) % 360;
+            return (Bearing)finalFacing;
         }
     }
 }

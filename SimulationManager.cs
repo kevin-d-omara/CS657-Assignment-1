@@ -9,7 +9,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 3;
+        public const int MoveLimit = 30;
 
         private Grid grid;
         private Rover rover;
@@ -34,7 +34,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 DisplayProgress();
 
                 // Exit conditions.
-                if (rover.Position == grid.goalPosition)
+                if (rover.Position.Equals(grid.goalPosition))
                 {
                     Console.WriteLine("-----> Goal Reached!");
                     break;

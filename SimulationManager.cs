@@ -11,7 +11,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class SimulationManager
     {
         public const int MoveLimit = 30;
-        public const bool waitForInput = false;
+        public const bool waitForInput = true;
 
         private Grid grid;
         private Rover rover;
@@ -32,6 +32,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             DisplayProgress();
             while (true)
             {
+                if (waitForInput) Console.ReadKey();
                 rover.Update();
                 DisplayProgress();
 
@@ -46,8 +47,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     Console.WriteLine("-----> Move Limit Reached.");
                     break;
                 }
-
-                if (waitForInput) Console.ReadKey();
             }
         }
 
@@ -64,8 +63,37 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// </summary>
         private void DisplayProgress()
         {
+            int buffer = 3;
+
+            Console.WriteLine();
+            string title = "Rover";
+            string space = new string(' ', Math.Max(grid.width + buffer - 3, 5));
+            title += space + "Actual";
+            Console.WriteLine(title);
             for (int y = 0; y <= grid.height + 1; ++y)
             {
+                // Print Rover's knowledge of environment.
+                for (int x = 0; x <= grid.width + 1; ++x)
+                {
+                    char image;
+                    if (x == rover.Position.x && y == rover.Position.y)
+                    {
+                        image = 'R';
+                    }
+                    else if (x == grid.goalPosition.x && y == grid.goalPosition.y)
+                    {
+                        image = 'G';
+                    }
+                    else
+                    {
+                        image = rover.Grid.Position[x, y].image;
+                    }
+                    Console.Write(image);
+                }
+
+                Console.Write("   ");
+
+                // Print actual environment.
                 for (int x = 0; x <= grid.width + 1; ++x)
                 {
                     char image;
@@ -89,7 +117,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 rover.Position.y);
             Console.WriteLine("Facing: {0}", rover.Facing);
             Console.WriteLine("Move: {0}/{1}", rover.MoveCount, MoveLimit);
-            Console.WriteLine();
+//            Console.WriteLine();
         }
     }
 }

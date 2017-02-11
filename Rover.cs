@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
 {
+    /// <summary>
+    /// Rover is controlled by an Expert AI and incrementally updates it's
+    /// knowledge of the surrounding terrain. Each Update() it sends out Sonar
+    /// to find obstacles, then decides on the best move to get closer to the
+    /// goal location.
+    /// </summary>
     public class Rover
     {
         // State
@@ -10,11 +16,22 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public Bearing Facing { get; private set; }
 
         public int MoveCount { get; private set; } = 0;
-        public Stack<Vector2> PreviousMoves { get; private set; }
-            = new Stack<Vector2>();
+        public Stack<Move> PreviousMoves { get; private set; }
+            = new Stack<Move>();
+
+        public class Move
+        {
+            public Vector2 Position { get; private set; }
+            public Bearing Facing { get; private set; }
+            public Move(Vector2 position, Bearing facing)
+            {
+                Position = position;
+                Facing = facing;
+            }
+        }
 
         // Database
-        private Grid grid;
+        public Grid Grid { get; private set; }
 
         // Intelligent Control
         // todo
@@ -27,12 +44,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         public Rover(GridParameters gridParameters)
         {
-            grid = new Grid(gridParameters);
+            Grid = new Grid(gridParameters);
             Position = gridParameters.startPosition;
             
             // !TODO: replace South w/ direction facing goal
             Facing = Bearing.SouthEast;
-            
         }
 
         public void Update()
@@ -45,7 +61,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private void MakeMove(Direction direction)
         {
             // record action
-            PreviousMoves.Push(Position);
+            PreviousMoves.Push(new Move(Position, Facing));
             ++MoveCount;
 
             // update Position

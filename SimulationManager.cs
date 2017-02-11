@@ -9,7 +9,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 1;
+        public const int MoveLimit = 3;
 
         private Grid grid;
         private Rover rover;

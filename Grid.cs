@@ -4,6 +4,13 @@ using System.Collections.Generic;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
 {
+    // Grid uses Screen-Space coordinates:
+    //   _1_2_3_ +X
+    // 1|
+    // 2| A <--[1,2]
+    // 3|
+    // +Y
+
     public class Grid
     {
         public Cell[,] Position { get; private set; }

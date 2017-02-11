@@ -46,9 +46,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             Moves.Push(Position);
             ++MoveCount;
+
             // update Position
+            Vector2 offset = Utility.ConvertBearingToCoordinateOffset(Facing);
+            Position = new Vector2(Position.x + offset.x, Position.y + offset.y);
+
             // update Facing
-            // update Moves
+
         }
     }
 }

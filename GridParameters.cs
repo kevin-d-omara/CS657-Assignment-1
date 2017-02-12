@@ -17,7 +17,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             { Cell.Type.Wall };
 
         /// <summary>
-        ///  Default constructor: all fields initialized to default values (see class definition).
+        ///  Default constructor: all fields initialized to default values (see
+        ///  class definition).
         /// </summary>
         public GridParameters() { goalPosition = new Vector2(width, height); }
 

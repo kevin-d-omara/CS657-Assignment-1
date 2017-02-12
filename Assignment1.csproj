@@ -41,6 +41,7 @@
     <Compile Include="Grid.cs" />
     <Compile Include="GridParameters.cs" />
     <Compile Include="Rover.cs" />
+    <Compile Include="RoverParameters.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="SimulationManager.cs" />
     <Compile Include="Vector2.cs" />

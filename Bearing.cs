@@ -23,6 +23,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         Backward = 180, BackwardLeft = 225, SideLeft = 270, ForwardLeft = 315
     }
 
+    /// <summary>
+    /// Extension methods for the enum Bearing.
+    /// </summary>
     public static class BearingMethods
     {
         /// <summary>

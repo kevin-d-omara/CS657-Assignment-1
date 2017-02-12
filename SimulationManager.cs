@@ -26,7 +26,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             // Rover database starts with no obstacles.
             gridParameters.obstacleDensity = 0f;
-            rover = new Rover(gridParameters);
+            RoverParameters roverParameters = GetRoverParameters();
+            rover = new Rover(gridParameters, roverParameters);
 
             // Simulation Loop
             DisplayProgress();
@@ -54,6 +55,12 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             // Prompt user for GridParameters
             return new GridParameters();
+        }
+
+        private RoverParameters GetRoverParameters()
+        {
+            // Prompt user for RoverParameters
+            return new RoverParameters();
         }
 
         /// <summary>

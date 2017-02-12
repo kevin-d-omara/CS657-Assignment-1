@@ -36,16 +36,27 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // Intelligent Control
         // todo
 
-        public readonly List<Sequence> AllowedMovementSequences;
-        public readonly List<Sequence> AllowedSonarSequences;
+        public readonly List<Sequence> allowedMovementSequences;
+        public readonly List<Sequence> allowedSonarSequences;
 
-        public Rover(GridParameters gridParameters)
+        public Rover(GridParameters gridParameters, RoverParameters roverParams)
         {
             Grid = new Grid(gridParameters);
             Position = gridParameters.startPosition;
-            
-            // !TODO: replace South w/ direction facing goal
-            Facing = Bearing.SouthEast;
+
+            Facing = roverParams.facing;
+
+            // Deep copy lists.
+            allowedMovementSequences = new List<Sequence>();
+            foreach (Sequence sequence in roverParams.allowedMovementSequences)
+            {
+                allowedMovementSequences.Add(sequence);
+            }
+            allowedSonarSequences = new List<Sequence>();
+            foreach (Sequence sequence in roverParams.allowedSonarSequences)
+            {
+                allowedSonarSequences.Add(sequence);
+            }
         }
 
         public void Update()
@@ -58,7 +69,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         /// <summary>
         /// Reset Rover's Position & Facing to the last move made. Note: this
-        /// counts as a move *and* does not place any new move on the stack.
+        /// counts as a move and does not place a new move on the stack.
         /// </summary>
         private void ReverseMove()
         {

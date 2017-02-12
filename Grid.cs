@@ -56,6 +56,43 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             PlaceObstacles();
         }
 
+        public List<Cell> RaycastFrom(Vector2 initialPosition,
+            Bearing initialFacing, Sequence sequence)
+        {
+            List<Cell> hitCells = new List<Cell>();
+            Vector2 pos = initialPosition;
+            Bearing facing = initialFacing;
+            bool rayBlocked = false;
+            do
+            {
+                // Calculate coordinates of next Cell to check.
+                Bearing targetBearing = facing.ToBearing(sequence.direction);
+                Vector2 offset = targetBearing.ToCoordinateOffset();
+                pos = new Vector2(pos.x + offset.x, pos.y + offset.y);
+                facing = targetBearing;
+
+                hitCells.Add(Position[(int)pos.x, (int)pos.y]);
+
+                // Check if current Cell blocks the sequence.
+                switch(sequence.type)
+                {
+                    case Sequence.Type.Movement:
+                        rayBlocked = Position[(int)pos.x, (int)pos.y].blocksMove;
+                        break;
+                    case Sequence.Type.Sonar:
+                        rayBlocked = Position[(int)pos.x, (int)pos.y].blocksSonar;
+                        break;
+                }
+
+                if (sequence.mode == Sequence.Mode.Terminate)
+                {
+                    rayBlocked = true;
+                }
+            } while (!rayBlocked);
+
+            return null;
+        }
+
         // Create a 2D array of 'floor' cells w/ a 'wall' cell border.
         private void CreateEmptyBoard()
         {

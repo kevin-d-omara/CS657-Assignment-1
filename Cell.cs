@@ -10,7 +10,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         public readonly Type type;
         public readonly bool blocksMove;
-        public readonly bool blocksSight;
+        public readonly bool blocksSonar;
         public readonly char image;
 
         public Cell(Type type)
@@ -20,17 +20,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 case Type.Floor:
                     blocksMove = false;
-                    blocksSight = false;
+                    blocksSonar = false;
                     image = '.';
                     break;
                 case Type.Wall:
                     blocksMove = true;
-                    blocksSight = true;
+                    blocksSonar = true;
                     image = 'X';
                     break;
                 case Type.Pit:
                     blocksMove = true;
-                    blocksSight = false;
+                    blocksSonar = false;
                     image = '_';
                     break;
                 default:

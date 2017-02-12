@@ -61,10 +61,23 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         public void Update()
         {
-            // DetectWithSonar()
-            // DecideOnMove()
+            DetectWithSonar();
+
+            // DecideOnMove();
 
             MakeMove(Direction.Forward);
+        }
+
+        /// <summary>
+        /// Rover sends out sonar signals to detect surrounding environment. The
+        /// results are used to update the internal database.
+        /// </summary>
+        private void DetectWithSonar()
+        {
+            foreach (Sequence sequence in allowedSonarSequences)
+            {
+
+            }
         }
 
         /// <summary>

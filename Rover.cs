@@ -36,11 +36,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // Intelligent Control
         // todo
 
-        // Movement Set
-        // todo
-
-        // Sonar Set
-        // todo
+        public readonly List<Sequence> AllowedMovementSequences;
+        public readonly List<Sequence> AllowedSonarSequences;
 
         public Rover(GridParameters gridParameters)
         {

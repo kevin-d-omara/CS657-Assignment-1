@@ -33,16 +33,21 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // Database
         public Grid Grid { get; private set; }
 
+        // Actual environment being traversed.
+        public readonly Grid environment;
+
         // Intelligent Control
         // todo
 
         public readonly List<Sequence> allowedMovementSequences;
         public readonly List<Sequence> allowedSonarSequences;
 
-        public Rover(GridParameters gridParameters, RoverParameters roverParams)
+        public Rover(RoverParameters roverParams, Grid environment,
+            GridParameters gridParameters)
         {
             Grid = new Grid(gridParameters);
             Position = gridParameters.startPosition;
+            this.environment = environment;
 
             Facing = roverParams.facing;
 
@@ -74,9 +79,21 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// </summary>
         private void DetectWithSonar()
         {
-            foreach (Sequence sequence in allowedSonarSequences)
+            // Use sonar in all allowed directions.
+            foreach (Sequence sonarSequence in allowedSonarSequences)
             {
+                List<Cell> hitCells = environment.RaycastFrom(Position, Facing,
+                    sonarSequence);
 
+                // Update database according to results.
+                foreach (Cell cell in hitCells)
+                {
+                    if (cell.type != Grid.Position[cell.x, cell.y].type)
+                    {
+                        Grid.Position[cell.x, cell.y] = new Cell(cell.type,
+                            cell.x, cell.y);
+                    }
+                }
             }
         }
 

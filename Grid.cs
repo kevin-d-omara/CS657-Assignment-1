@@ -90,7 +90,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 }
             } while (!rayBlocked);
 
-            return null;
+            return hitCells;
         }
 
         // Create a 2D array of 'floor' cells w/ a 'wall' cell border.
@@ -103,11 +103,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 {
                     if (x == 0 || x == width + 1 || y == 0 || y == height + 1)
                     {
-                        Position[x, y] = new Cell(Cell.Type.Wall);
+                        Position[x, y] = new Cell(Cell.Type.Wall, x, y);
                     }
                     else
                     {
-                        Position[x, y] = new Cell(Cell.Type.Floor);
+                        Position[x, y] = new Cell(Cell.Type.Floor, x, y);
                         validObstaclePositions.Add(new Vector2(x, y));
                     }
                 }
@@ -142,7 +142,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 randomIndex = random.Next(0, obstacleTypes.Count);
                 Cell.Type randType = obstacleTypes[randomIndex];
 
-                Position[(int)randPos.x, (int)randPos.y] = new Cell(randType);
+                Position[(int)randPos.x, (int)randPos.y] = new Cell(randType,
+                    (int)randPos.x, (int)randPos.y);
             }
         }
     }

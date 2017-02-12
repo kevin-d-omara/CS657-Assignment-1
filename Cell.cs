@@ -12,8 +12,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly bool blocksMove;
         public readonly bool blocksSonar;
         public readonly char image;
+        public readonly int x;
+        public readonly int y;
 
-        public Cell(Type type)
+        public Cell(Type type, int x, int y)
         {
             this.type = type;
             switch (type)
@@ -36,6 +38,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 default:
                     throw new System.ArgumentException("Unsupported Cell.Type");
             }
+            this.x = x;
+            this.y = y;
         }
     }
 }

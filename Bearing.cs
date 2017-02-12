@@ -26,7 +26,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public static class BearingMethods
     {
         /// <summary>
-        /// Converts from Bearing Space (North is up, East is right) to Screen
+        /// Transforms from Bearing Space (North is up, East is right) to Screen
         /// Space (+X is right, +Y is down).
         /// </summary>
         /// <param name="bearing">Bearing to convert to the coordinate offset.</param>
@@ -69,7 +69,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         }
 
         /// <summary>
-        /// Converts from the Rover's initial absolute Bearing and relative
+        /// Transforms from the Rover's initial absolute Bearing and relative
         /// Direction to the final absolute Bearing. I.e. South & ForwardRight
         /// => SouthWest.
         /// </summary>

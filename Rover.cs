@@ -5,9 +5,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     /// <summary>
     /// Rover is controlled by an Expert AI and incrementally updates it's
-    /// knowledge of the surrounding terrain. Each Update() it sends out Sonar
-    /// to find obstacles, then decides on the best move to get closer to the
-    /// goal location.
+    /// knowledge of the surrounding terrain. During each Update() it sends out
+    /// Sonar to find obstacles, then decides on the best move to get closer to
+    /// the goal location.
     /// </summary>
     public class Rover
     {
@@ -55,9 +55,32 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             // DetectWithSonar()
             // DecideOnMove()
+
             MakeMove(Direction.Forward);
         }
 
+        /// <summary>
+        /// Reset Rover's Position & Facing to the last move made. Note: this
+        /// counts as a move *and* does not place any new move on the stack.
+        /// </summary>
+        private void ReverseMove()
+        {
+            ++MoveCount;
+
+            if (PreviousMoves.Count > 0)
+            {
+                Move lastMove = PreviousMoves.Pop();
+                Position = lastMove.Position;
+                Facing = lastMove.Facing;
+            }
+        }
+
+        /// <summary>
+        /// Move the Rover one cell in the direction specified. I.e. if the
+        /// Rover is facing South, and moves in the direction ForwardLeft,
+        /// the Rover will move SouthEast.
+        /// </summary>
+        /// <param name="direction">Direction relative to the Rover's facing to move.</param>
         private void MakeMove(Direction direction)
         {
             // record action

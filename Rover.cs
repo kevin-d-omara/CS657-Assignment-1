@@ -177,7 +177,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Bearing moveBearing = Facing.ToBearing(direction);
             Vector2 offset = moveBearing.ToCoordinateOffset();
 
-            // Only move if target Cell doesn't block movement.
+            // Check actual environment to see if target Cell blocks movement.
+            // If so, don't move. This represents the rover bumping into a Wall.
             if (!Grid.Position[(int)(Position.x + offset.x),
                 (int)(Position.y + offset.y)].blocksMove)
             {

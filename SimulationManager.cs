@@ -11,7 +11,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class SimulationManager
     {
         public const int MoveLimit = 30;
-        public const bool waitForInput = true;
+        public const bool waitForInput = false;
 
         private Grid grid;
         private Rover rover;

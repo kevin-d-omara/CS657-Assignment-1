@@ -16,14 +16,14 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public Bearing Facing { get; private set; }
 
         public int MoveCount { get; private set; } = 0;
-        public Stack<Move> PreviousMoves { get; private set; }
-            = new Stack<Move>();
+        public Stack<ActionRecord> PreviousMoves { get; private set; }
+            = new Stack<ActionRecord>();
 
-        public class Move
+        public class ActionRecord
         {
             public Vector2 Position { get; private set; }
             public Bearing Facing { get; private set; }
-            public Move(Vector2 position, Bearing facing)
+            public ActionRecord(Vector2 position, Bearing facing)
             {
                 Position = position;
                 Facing = facing;
@@ -66,27 +66,18 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         public void Update()
         {
-            DetectSurroundingsWithSonar();
+            DetectEnvironmentWithSonar();
 
-            Direction moveDirection =  DecideOnMove();
+            Action action = ChooseAction();
 
-            MakeMove(moveDirection);
-        }
-
-        /// <summary>
-        /// Consult Expert AI or User Input to determine the next move to take.
-        /// </summary>
-        /// <returns></returns>
-        private Direction DecideOnMove()
-        {
-            return Direction.Forward;
+            TakeAction(action);
         }
 
         /// <summary>
         /// Rover sends out sonar signals to detect surrounding environment. The
         /// results are used to update the internal database.
         /// </summary>
-        private void DetectSurroundingsWithSonar()
+        private void DetectEnvironmentWithSonar()
         {
             // Use sonar in all allowed directions.
             foreach (Sequence sonarSequence in allowedSonarSequences)
@@ -107,15 +98,70 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         }
 
         /// <summary>
-        /// Move the Rover one cell in the direction specified. I.e. if the
-        /// Rover is facing South, and moves in the direction ForwardLeft,
-        /// the Rover will move SouthEast.
+        /// Consult Expert AI or User Input to determine the next action.
         /// </summary>
-        /// <param name="direction">Direction relative to the Rover's facing to move.</param>
-        private void MakeMove(Direction direction)
+        private Action ChooseAction()
+        {
+            Action action;
+            var keyInfo = Console.ReadKey();
+            switch((char)keyInfo.Key)
+            {
+                case 'W':
+                    action = new Action(Action.Type.Move, Direction.Forward);
+                    break;
+                case 'A':
+                    action = new Action(Action.Type.Move, Direction.ForwardLeft);
+                    break;
+                case 'D':
+                    action = new Action(Action.Type.Move, Direction.ForwardRight);
+                    break;
+                case 'Q':
+                    action = new Action(Action.Type.Rotate, Direction.ForwardLeft);
+                    break;
+                case 'E':
+                    action = new Action(Action.Type.Rotate, Direction.ForwardRight);
+                    break;
+                case 'S':
+                    action = new Action(Action.Type.Revert, Direction.ForwardLeft);
+                    break;
+                default:
+                    action = new Action(Action.Type.Move, Direction.Forward);
+                    break;
+            }
+
+            return action;
+
+            //return new Action(Action.Type.Move, Direction.Forward);
+        }
+
+        private void TakeAction(Action action)
+        {
+            switch (action.type)
+            {
+                case Action.Type.Move:
+                    Move(action.direction);
+                    break;
+                case Action.Type.Rotate:
+                    Rotate(action.direction);
+                    break;
+                case Action.Type.Revert:
+                    RevertToLastAction();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Move the Rover one cell in the direction specified. Rover rotates 45
+        /// degrees if direction is not Forward. I.e. if the Rover is facing
+        /// South, and moves in the direction ForwardLeft, the Rover will move
+        /// SouthEast and rotate 45 degrees CCW.
+        /// </summary>
+        /// <param name="direction">Direction relative to the Rover's facing to
+        /// move.</param>
+        private void Move(Direction direction)
         {
             // record action
-            PreviousMoves.Push(new Move(Position, Facing));
+            PreviousMoves.Push(new ActionRecord(Position, Facing));
             ++MoveCount;
 
             // update Position
@@ -128,16 +174,32 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         }
 
         /// <summary>
+        /// Rotate the rover 45 degrees in the direction specified.
+        /// </summary>
+        /// <param name="direction">Direction relative to the Rover's facing to
+        /// move.</param>
+        private void Rotate(Direction direction)
+        {
+            // record action
+            PreviousMoves.Push(new ActionRecord(Position, Facing));
+            ++MoveCount;
+
+            // update Facing
+            Bearing moveBearing = Facing.ToBearing(direction);
+            Facing = moveBearing;
+        }
+
+        /// <summary>
         /// Reset Rover's Position & Facing to the last move made. Note: this
         /// counts as a move and does not place a new move on the stack.
         /// </summary>
-        private void ReverseMove()
+        private void RevertToLastAction()
         {
             ++MoveCount;
 
             if (PreviousMoves.Count > 0)
             {
-                Move lastMove = PreviousMoves.Pop();
+                ActionRecord lastMove = PreviousMoves.Pop();
                 Position = lastMove.Position;
                 Facing = lastMove.Facing;
             }

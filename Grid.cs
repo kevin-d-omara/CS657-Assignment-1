@@ -63,13 +63,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Vector2 pos = initialPosition;
             Bearing facing = initialFacing;
             bool rayBlocked = false;
+
+            Bearing targetBearing = facing.ToBearing(sequence.direction);
+            Vector2 offset = targetBearing.ToCoordinateOffset();
             do
             {
                 // Calculate coordinates of next Cell to check.
-                Bearing targetBearing = facing.ToBearing(sequence.direction);
-                Vector2 offset = targetBearing.ToCoordinateOffset();
                 pos = new Vector2(pos.x + offset.x, pos.y + offset.y);
-                facing = targetBearing;
 
                 hitCells.Add(Position[(int)pos.x, (int)pos.y]);
 

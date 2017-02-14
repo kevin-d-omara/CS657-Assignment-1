@@ -66,18 +66,27 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         public void Update()
         {
-            DetectWithSonar();
+            DetectSurroundingsWithSonar();
 
-            // DecideOnMove();
+            Direction moveDirection =  DecideOnMove();
 
-            MakeMove(Direction.Forward);
+            MakeMove(moveDirection);
+        }
+
+        /// <summary>
+        /// Consult Expert AI or User Input to determine the next move to take.
+        /// </summary>
+        /// <returns></returns>
+        private Direction DecideOnMove()
+        {
+            return Direction.Forward;
         }
 
         /// <summary>
         /// Rover sends out sonar signals to detect surrounding environment. The
         /// results are used to update the internal database.
         /// </summary>
-        private void DetectWithSonar()
+        private void DetectSurroundingsWithSonar()
         {
             // Use sonar in all allowed directions.
             foreach (Sequence sonarSequence in allowedSonarSequences)
@@ -94,22 +103,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                             cell.x, cell.y);
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Reset Rover's Position & Facing to the last move made. Note: this
-        /// counts as a move and does not place a new move on the stack.
-        /// </summary>
-        private void ReverseMove()
-        {
-            ++MoveCount;
-
-            if (PreviousMoves.Count > 0)
-            {
-                Move lastMove = PreviousMoves.Pop();
-                Position = lastMove.Position;
-                Facing = lastMove.Facing;
             }
         }
 
@@ -132,6 +125,22 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             // update Facing
             Facing = moveBearing;
+        }
+
+        /// <summary>
+        /// Reset Rover's Position & Facing to the last move made. Note: this
+        /// counts as a move and does not place a new move on the stack.
+        /// </summary>
+        private void ReverseMove()
+        {
+            ++MoveCount;
+
+            if (PreviousMoves.Count > 0)
+            {
+                Move lastMove = PreviousMoves.Pop();
+                Position = lastMove.Position;
+                Facing = lastMove.Facing;
+            }
         }
     }
 }

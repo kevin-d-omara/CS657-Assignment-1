@@ -37,13 +37,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly Grid environment;
 
         // Intelligent Control
-        // todo
+        public readonly bool usingAI;
 
         public readonly List<Sequence> allowedMovementSequences;
         public readonly List<Sequence> allowedSonarSequences;
 
         public Rover(RoverParameters roverParams, Grid environment,
-            GridParameters gridParameters)
+            GridParameters gridParameters, bool usingAI)
         {
             Grid = new Grid(gridParameters);
             Position = gridParameters.startPosition;
@@ -62,6 +62,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 allowedSonarSequences.Add(sequence);
             }
+
+            this.usingAI = usingAI;
         }
 
         public void Update()
@@ -103,30 +105,38 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private Action ChooseAction()
         {
             Action action;
-            var keyInfo = Console.ReadKey();
-            switch((char)keyInfo.Key)
+
+            if (usingAI)
             {
-                case 'W':
-                    action = new Action(Action.Type.Move, Direction.Forward);
-                    break;
-                case 'A':
-                    action = new Action(Action.Type.Move, Direction.ForwardLeft);
-                    break;
-                case 'D':
-                    action = new Action(Action.Type.Move, Direction.ForwardRight);
-                    break;
-                case 'Q':
-                    action = new Action(Action.Type.Rotate, Direction.ForwardLeft);
-                    break;
-                case 'E':
-                    action = new Action(Action.Type.Rotate, Direction.ForwardRight);
-                    break;
-                case 'S':
-                    action = new Action(Action.Type.Revert, Direction.ForwardLeft);
-                    break;
-                default:
-                    action = new Action(Action.Type.Move, Direction.Forward);
-                    break;
+                action = new Action(Action.Type.Move, Direction.Forward);
+            }
+            else
+            {
+                var keyInfo = Console.ReadKey();
+                switch ((char)keyInfo.Key)
+                {
+                    case 'W':
+                        action = new Action(Action.Type.Move, Direction.Forward);
+                        break;
+                    case 'A':
+                        action = new Action(Action.Type.Move, Direction.ForwardLeft);
+                        break;
+                    case 'D':
+                        action = new Action(Action.Type.Move, Direction.ForwardRight);
+                        break;
+                    case 'Q':
+                        action = new Action(Action.Type.Rotate, Direction.ForwardLeft);
+                        break;
+                    case 'E':
+                        action = new Action(Action.Type.Rotate, Direction.ForwardRight);
+                        break;
+                    case 'S':
+                        action = new Action(Action.Type.Revert, Direction.ForwardLeft);
+                        break;
+                    default:
+                        action = new Action(Action.Type.Move, Direction.Forward);
+                        break;
+                }
             }
 
             return action;
@@ -160,17 +170,21 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// move.</param>
         private void Move(Direction direction)
         {
-            // record action
+            // Record Action.
             PreviousMoves.Push(new ActionRecord(Position, Facing));
             ++MoveCount;
 
-            // update Position
             Bearing moveBearing = Facing.ToBearing(direction);
             Vector2 offset = moveBearing.ToCoordinateOffset();
-            Position = new Vector2(Position.x + offset.x, Position.y + offset.y);
 
-            // update Facing
-            Facing = moveBearing;
+            // Only move if target Cell doesn't block movement.
+            if (!Grid.Position[(int)(Position.x + offset.x),
+                (int)(Position.y + offset.y)].blocksMove)
+            {
+                Position = new Vector2(Position.x + offset.x,
+                    Position.y + offset.y);
+                Facing = moveBearing;
+            }
         }
 
         /// <summary>

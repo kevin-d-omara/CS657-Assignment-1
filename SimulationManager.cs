@@ -11,7 +11,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class SimulationManager
     {
         public const int MoveLimit = 30;
-        public const bool waitForInput = false;
+        public const bool usingAI = false;
 
         private Grid grid;
         private Rover rover;
@@ -27,13 +27,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             // Rover database starts with no obstacles.
             gridParameters.obstacleDensity = 0f;
             RoverParameters roverParameters = GetRoverParameters();
-            rover = new Rover(roverParameters, grid, gridParameters);
+            rover = new Rover(roverParameters, grid, gridParameters, usingAI);
 
             // Simulation Loop
             DisplayProgress();
             while (true)
             {
-                if (waitForInput) Console.ReadKey();
+                if (usingAI) Console.ReadKey();
                 rover.Update();
                 DisplayProgress();
 

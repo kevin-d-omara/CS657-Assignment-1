@@ -10,7 +10,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     {
         public readonly Vector2 pos;
         public List<Path> Paths { get; private set; }
-        Node(Vector2 position)
+        public Node(Vector2 position)
         {
             pos = position;
             Paths = new List<Path>();

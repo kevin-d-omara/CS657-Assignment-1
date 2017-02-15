@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Priority_Queue;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
 {
@@ -12,17 +13,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly Grid grid;
         public readonly Vector2 start;
         public readonly Vector2 goal;
-        public readonly Direction startDirection;
+        public readonly Bearing startFacing;
 
         private Dictionary<Cell, Node> nodes = new Dictionary<Cell, Node>();
 
-        public AStarSearch(Grid grid, Vector2 start, Direction startDirection,
+        public AStarSearch(Grid grid, Vector2 start, Bearing startFacing,
             Vector2 goal)
         {
             this.grid = grid;
             this.start = start;
             this.goal = goal;
-            this.startDirection = startDirection;
+            this.startFacing = startFacing;
 
             Search();
         }
@@ -30,6 +31,25 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private void Search()
         {
             var startNode = new Node(start);
+            var startPath = new Path(start, 0, startFacing);
+            // Frontier is the open set of nodes to be explored.
+            var frontier = new SimplePriorityQueue<Node, int>();
+            frontier.Enqueue(startNode, 0);
+
+            while (frontier.Count > 0)
+            {
+                var currentNode = frontier.Dequeue();
+
+                if (currentNode.pos == goal)
+                {
+                    break;
+                }
+
+                foreach (Path path in currentNode.Paths)
+                {
+
+                }
+            }
         }
 
         public Stack<Vector2> GetShortestPath()

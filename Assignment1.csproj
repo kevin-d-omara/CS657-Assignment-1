@@ -33,14 +33,17 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="AStarSearch.cs" />
     <Compile Include="Bearing.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Driver.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="GridParameters.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Rover.cs" />
     <Compile Include="RoverParameters.cs" />
     <Compile Include="Sequence.cs" />
@@ -48,6 +51,9 @@
     <Compile Include="Vector2.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Priority Queue, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OptimizedPriorityQueue.4.0.0\lib\net45\Priority Queue.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Numerics" />
   </ItemGroup>

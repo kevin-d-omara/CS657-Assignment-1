@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Priority_Queue;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
 {

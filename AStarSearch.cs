@@ -14,7 +14,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly Vector2 goal;
         public readonly Direction startDirection;
 
-        private Node[,] nodes;
+        private Dictionary<Cell, Node> nodes = new Dictionary<Cell, Node>();
 
         public AStarSearch(Grid grid, Vector2 start, Direction startDirection,
             Vector2 goal)
@@ -23,12 +23,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             this.start = start;
             this.goal = goal;
             this.startDirection = startDirection;
+
             Search();
         }
 
         private void Search()
         {
-
+            var startNode = new Node(start);
         }
 
         public Stack<Vector2> GetShortestPath()

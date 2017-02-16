@@ -29,6 +29,28 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public static class BearingMethods
     {
         /// <summary>
+        /// Convert from a Facing and Offset to a Direction.
+        /// </summary>
+        public static Direction ToDirection(this Bearing facing, Vector2 offset)
+        {
+            // Convert Offset => Bearing.
+            Bearing absoluteBearing = Bearing.North;
+            foreach (Bearing bearing in Enum.GetValues(typeof(Bearing)))
+            {
+                if (offset.Equals(bearing.ToCoordinateOffset()))
+                {
+                    absoluteBearing = bearing;
+                    break;
+                }
+            }
+
+            // Convert absolute Bearing => relative Direction.
+            int angle = ((int)absoluteBearing + 360 - (int)facing) % 360;
+
+            return (Direction)angle;
+        }
+
+        /// <summary>
         /// Transforms from Bearing Space (North is up, East is right) to Screen
         /// Space (+X is right, +Y is down).
         /// </summary>

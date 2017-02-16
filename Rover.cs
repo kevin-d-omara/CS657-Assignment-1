@@ -108,7 +108,47 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             if (usingAI)
             {
-                action = new Action(Action.Type.Move, Direction.Forward);
+                // Run A* search.
+                var aStarSearch = new AStarSearch(Grid, Position, Facing,
+                    Grid.goalPosition);
+                var shortestPath = aStarSearch.GetShortestPath();
+
+                // Determine Direction relative to the Rover of the first move.
+                var nextNode = shortestPath.Pop();
+                var offset = new Vector2(nextNode.pos.x - Position.x,
+                    nextNode.pos.y - Position.y);
+
+                Bearing finalBearing = Bearing.East;
+                foreach (Bearing bearing in Enum.GetValues(typeof(Bearing)))
+                {
+                    if (offset == bearing.ToCoordinateOffset())
+                    {
+                        finalBearing = bearing;
+                        break;
+                    }
+                }
+
+                var direction = (Direction)Facing.
+                    ToBearing((Direction)finalBearing);
+
+                // Consult Expert System Rules to determine the Action.
+                if (direction == Direction.Forward
+                    || direction == Direction.ForwardLeft
+                    || direction == Direction.ForwardRight)
+                {
+                    action = new Action(Action.Type.Move, direction);
+                }
+                else if (direction == Direction.SideLeft
+                    || direction == Direction.SideRight
+                    || direction == Direction.BackwardLeft
+                    || direction == Direction.BackwardRight)
+                {
+                    action = new Action(Action.Type.Rotate, direction);
+                }
+                else // direction == Direction.Backward
+                {
+                    action = new Action(Action.Type.Revert, direction);
+                }
             }
             else
             {
@@ -140,8 +180,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             }
 
             return action;
-
-            //return new Action(Action.Type.Move, Direction.Forward);
         }
 
         private void TakeAction(Action action)
@@ -152,7 +190,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     Move(action.direction);
                     break;
                 case Action.Type.Rotate:
-                    Rotate(action.direction);
+                    Rotate45(action.direction);
                     break;
                 case Action.Type.Revert:
                     RevertToLastAction();
@@ -193,15 +231,30 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// </summary>
         /// <param name="direction">Direction relative to the Rover's facing to
         /// move.</param>
-        private void Rotate(Direction direction)
+        private void Rotate45(Direction direction)
         {
-            // record action
+            // Record Action.
             PreviousMoves.Push(new ActionRecord(Position, Facing));
             ++MoveCount;
 
-            // update Facing
-            Bearing moveBearing = Facing.ToBearing(direction);
-            Facing = moveBearing;
+            // Exit early if unallowed direction.
+            if (direction == Direction.Forward
+                || direction == Direction.Backward) { return; }
+
+            // Hard limit the rotation to 45 degrees.
+            if (direction == Direction.ForwardLeft
+                || direction == Direction.SideLeft
+                || direction == Direction.SideRight)
+            {
+                direction = Direction.ForwardLeft;
+            }
+            else
+            {
+                direction = Direction.ForwardRight;
+            }
+
+            //Uupdate Facing.
+            Facing = Facing.ToBearing(direction);
         }
 
         /// <summary>

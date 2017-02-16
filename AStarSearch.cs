@@ -66,11 +66,28 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private void Search()
         {
             var startNode = new Node(start);
-            var startPath = new Path(start, 0, startFacing);
+            var startPath = new Path(startNode, 0, startFacing);
             // Frontier is the open set of nodes to be explored.
             var frontier = new SimplePriorityQueue<Node, int>();
             frontier.Enqueue(startNode, 0);
 
+            // Create and Enqueue the Node directly Backward from the startNode.
+            // This allows the Rover to "back out" of blocked corridors.
+            {
+                var rearFacing = startFacing.ToBearing(Direction.Backward);
+                var offset = rearFacing.ToCoordinateOffset();
+                var rearPos = new Vector2((start.x + offset.x), (start.y + offset.y));
+                var rearCell = grid.Position[(int)rearPos.x, (int)rearPos.y];
+                if (!rearCell.blocksMove)
+                {
+                    var rearNode = new Node(rearPos);
+                    rearNode.Append((new Path(startNode, 4, rearFacing)));
+                    frontier.Enqueue(rearNode, 4);
+                }
+            }
+
+            // Explore the Frontier Nodes with priority given to the
+            // cheapest-to-reach Nodes.
             while (frontier.Count > 0)
             {
                 var currentNode = frontier.Dequeue();
@@ -84,46 +101,44 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 {
                     foreach (Move move in adjacentCells)
                     {
-                        var moveBearing = path.facing.ToBearing(move.direction);
-                        var offset = moveBearing.ToCoordinateOffset();
+                        var newCost = path.cost + move.cost;
+                        var newFacing = path.facing.ToBearing(move.direction);
+                        var offset = newFacing.ToCoordinateOffset();
 
-                        var targetCell = grid.Position[(int)(currentNode.pos.x
+                        var nextCell = grid.Position[(int)(currentNode.pos.x
                             + offset.x), (int)(currentNode.pos.y + offset.y)];
 
-                        if (targetCell.blocksMove) { continue; }
+                        if (nextCell.blocksMove) { continue; }
 
-                        var newCost = path.cost + move.cost;
-                        var newFacing = moveBearing;
-
-                        if (nodes.TryGetValue(targetCell, out Node targetNode))
+                        if (nodes.TryGetValue(nextCell, out Node nextNode))
                         { }
                         else
                         {
-                            var pos = new Vector2(targetCell.x, targetCell.y);
-                            targetNode = new Node(pos);
-                            nodes.Add(targetCell, targetNode);
+                            var pos = new Vector2(nextCell.x, nextCell.y);
+                            nextNode = new Node(pos);
+                            nodes.Add(nextCell, nextNode);
                         }
 
-                        if (targetNode.Paths.Count == 0)
+                        if (nextNode.Paths.Count == 0)
                         {
-                            targetNode.Append(new Path(currentNode.pos, newCost,
+                            nextNode.Append(new Path(currentNode, newCost,
                                 newFacing));
-                            frontier.Enqueue(targetNode, newCost);
+                            frontier.Enqueue(nextNode, newCost);
                         }
                         else // Count > 1
                         {
                             // All Paths in a Node have equal cost.
-                            if (targetNode.Paths[0].cost > newCost)
+                            if (nextNode.Paths[0].cost > newCost)
                             {
-                                targetNode.Replace(new Path(currentNode.pos,
+                                nextNode.Replace(new Path(currentNode,
                                     newCost, newFacing));
-                                frontier.UpdatePriority(targetNode, newCost);
+                                frontier.UpdatePriority(nextNode, newCost);
                             }
-                            else if (targetNode.Paths[0].cost == newCost)
+                            else if (nextNode.Paths[0].cost == newCost)
                             {
                                 // Prevent duplicate Paths from being appended.
                                 var shouldAppend = true;
-                                foreach (Path targetPath in targetNode.Paths)
+                                foreach (Path targetPath in nextNode.Paths)
                                 {
                                     if (targetPath.facing == newFacing)
                                     {
@@ -133,7 +148,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                                 }
                                 if (shouldAppend)
                                 {
-                                    targetNode.Append(new Path(currentNode.pos,
+                                    nextNode.Append(new Path(currentNode,
                                         newCost, newFacing));
                                 }
                             }
@@ -141,15 +156,35 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     }
                 }
             }
+            // Prevent GetShortestPath() from hitting an infinite loop.
+            startNode.ClearPaths();
         }
 
-        public Stack<Vector2> GetShortestPath()
+        /// <summary>
+        /// Returns a Stack with the shortest path to the Goal. Note: Stack will
+        /// be empty if there is no path.
+        /// </summary>
+        /// <returns>If a path exists, returns a Stack with the shortest path to
+        /// the goal. Else, returns an empty Stack.</returns>
+        public Stack<Node> GetShortestPath()
         {
-            var shortestPath = new Stack<Vector2>();
+            var shortestPath = new Stack<Node>();
 
-            // push goal
-            // push (goal.closestPath), repeat
-            // stop @ start
+            // Start with goal Node.
+            if (nodes.TryGetValue(grid.Position[(int)goal.x, (int)goal.y],
+                out Node nextNode))
+            { }
+            // Exit early if goal wasn't reached.
+            else
+            {
+                return shortestPath;
+            }
+
+            while (nextNode.Paths.Count > 0)
+            {
+                shortestPath.Push(nextNode);
+                nextNode = nextNode.Paths[0].from;
+            }
 
             return shortestPath;
         }

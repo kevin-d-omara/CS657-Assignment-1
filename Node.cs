@@ -28,5 +28,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// Replace all Paths leading to this Node with a single new path.
         /// </summary>
         public void Replace(Path path) { Paths = new List<Path> { path }; }
+
+        public void ClearPaths() { Paths = new List<Path>(); }
     }
 }

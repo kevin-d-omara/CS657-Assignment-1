@@ -29,6 +29,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly Vector2 start;
         public readonly Vector2 goal;
         public readonly Bearing startFacing;
+        public readonly Stack<Rover.ActionRecord> previousMoves;
 
         private Dictionary<Cell, Node> nodes = new Dictionary<Cell, Node>();
         private class Move
@@ -53,12 +54,14 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         };
 
         public AStarSearch(Grid grid, Vector2 start, Bearing startFacing,
-            Vector2 goal)
+            Vector2 goal, Stack<Rover.ActionRecord> previousMoves)
         {
             this.grid = grid;
             this.start = start;
             this.goal = goal;
             this.startFacing = startFacing;
+            // shallow copy the stack: TODO - determine that the objects are in the correct order.
+            this.previousMoves = new Stack<Rover.ActionRecord>(previousMoves);
 
             Search();
         }
@@ -67,23 +70,30 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             var startNode = new Node(start);
             var startPath = new Path(startNode, 0, startFacing);
+            startNode.Append(startPath);
             // Frontier is the open set of nodes to be explored.
             var frontier = new SimplePriorityQueue<Node, int>();
             frontier.Enqueue(startNode, 0);
 
-            // Create and Enqueue the Node directly Backward from the startNode.
-            // This allows the Rover to "back out" of blocked corridors.
+            // Create and Enqueue all Nodes the Rover has been to prior.
+            // This allows the Rover to benefit from the Revert action.
+            while (previousMoves.Count > 0)
             {
-                var rearFacing = startFacing.ToBearing(Direction.Backward);
-                var offset = rearFacing.ToCoordinateOffset();
-                var rearPos = new Vector2((start.x + offset.x), (start.y + offset.y));
-                var rearCell = grid.Position[(int)rearPos.x, (int)rearPos.y];
-                if (!rearCell.blocksMove)
-                {
-                    var rearNode = new Node(rearPos);
-                    rearNode.Append((new Path(startNode, 4, rearFacing)));
-                    frontier.Enqueue(rearNode, 4);
-                }
+                // TODO + verify shallow copy stack is in the correct order
+            }
+
+            // Create and Enqueue the Node directly Backward from the
+            // starting Node. This allows the Rover to "back out" of a
+            // blocked start.
+            var rearFacing = startFacing.ToBearing(Direction.Backward);
+            var offset = rearFacing.ToCoordinateOffset();
+            var rearPos = new Vector2((start.x + offset.x), (start.y + offset.y));
+            var rearCell = grid.Position[(int)rearPos.x, (int)rearPos.y];
+            if (!rearCell.blocksMove)
+            {
+                var rearNode = new Node(rearPos);
+                rearNode.Append((new Path(startNode, 4, rearFacing)));
+                frontier.Enqueue(rearNode, 4);
             }
 
             // Explore the Frontier Nodes with priority given to the

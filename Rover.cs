@@ -110,7 +110,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 // Run A* search.
                 var aStarSearch = new AStarSearch(Grid, Position, Facing,
-                    Grid.goalPosition);
+                    Grid.goalPosition, PreviousMoves);
                 var shortestPath = aStarSearch.GetShortestPath();
 
                 if (shortestPath.Count == 0)

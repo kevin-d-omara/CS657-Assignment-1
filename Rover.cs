@@ -113,23 +113,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     Grid.goalPosition);
                 var shortestPath = aStarSearch.GetShortestPath();
 
+                if (shortestPath.Count == 0)
+                {
+                    Console.WriteLine("-----> No Path Found!"); // TODO: make this stop the simulation
+                }
+
                 // Determine Direction relative to the Rover of the first move.
                 var nextNode = shortestPath.Pop();
                 var offset = new Vector2(nextNode.pos.x - Position.x,
                     nextNode.pos.y - Position.y);
 
-                Bearing finalBearing = Bearing.East;
-                foreach (Bearing bearing in Enum.GetValues(typeof(Bearing)))
-                {
-                    if (offset == bearing.ToCoordinateOffset())
-                    {
-                        finalBearing = bearing;
-                        break;
-                    }
-                }
-
-                var direction = (Direction)Facing.
-                    ToBearing((Direction)finalBearing);
+                var direction = Facing.ToDirection(offset);
 
                 // Consult Expert System Rules to determine the Action.
                 if (direction == Direction.Forward
@@ -244,7 +238,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             // Hard limit the rotation to 45 degrees.
             if (direction == Direction.ForwardLeft
                 || direction == Direction.SideLeft
-                || direction == Direction.SideRight)
+                || direction == Direction.BackwardLeft)
             {
                 direction = Direction.ForwardLeft;
             }

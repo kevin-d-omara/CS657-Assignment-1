@@ -1,15 +1,19 @@
 ﻿namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     /// <summary>
-    /// Holds a single step leading to the owner's Node.
+    /// Records the Node leading to this Node, the cumulative cost to reach it,
+    /// and the facing after moving into it.
     /// </summary>
     public class Path
     {
-        public readonly Vector2 from;
+        public readonly Node from;
         public readonly int cost;
         public readonly Bearing facing;
 
-        public Path(Vector2 from, int cost, Bearing facing)
+        /// <param name="from">Node coming before this Node.</param>
+        /// <param name="cost">Cumulative cost to reach this Node.</param>
+        /// <param name="facing">Facing after moving into this Node.</param>
+        public Path(Node from, int cost, Bearing facing)
         {
             this.from = from;
             this.cost = cost;

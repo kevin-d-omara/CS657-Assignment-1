@@ -11,6 +11,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class Node
     {
         public readonly Vector2 pos;
+        // All Paths have the same cost, but different facings.
         public List<Path> Paths { get; private set; }
         public Node(Vector2 position)
         {

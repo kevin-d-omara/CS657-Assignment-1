@@ -5,7 +5,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     public class Action
     {
-        public enum Type { Move, Rotate, Revert }
+        public enum Type { Move, Rotate, Revert, Wait }
 
         public Type type;
         public Direction direction;

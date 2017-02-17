@@ -14,6 +14,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // Events & Delegates
         public delegate void UsedSonar();
         public static event UsedSonar OnUsedSonar;
+        public delegate void NoPathFound();
+        public static event NoPathFound OnNoPathFound;
 
         // State
         public Vector2 Position { get; private set; }
@@ -119,9 +121,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 Grid.goalPosition, PreviousMoves);
             var shortestPath = aStarSearch.GetShortestPath();
 
+            // Exit early if no path exists to the Goal.
             if (shortestPath.Count == 0)
             {
-                Console.WriteLine("-----> No Path Found!"); // TODO: make this stop the simulation
+                if (OnNoPathFound != null) { OnNoPathFound(); }
+                return new Action(Action.Type.Wait, Direction.Forward);
             }
 
             // Determine Direction relative to the Rover of the first move.
@@ -202,6 +206,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     break;
                 case Action.Type.Revert:
                     RevertToLastAction();
+                    break;
+                case Action.Type.Wait:
+                    // Rover does nothing.
+                    ++MoveCount;
                     break;
             }
         }

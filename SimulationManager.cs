@@ -14,8 +14,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         private Grid grid;
         private Rover rover;
+        private bool noPathFound = false;
 
-        public SimulationManager() { Rover.OnUsedSonar += DisplayProgress; }
+        public SimulationManager()
+        {
+            Rover.OnUsedSonar += DisplayProgress;
+            Rover.OnNoPathFound += FlagNoPathFound;
+        }
         ~SimulationManager() { Rover.OnUsedSonar -= DisplayProgress; }
 
         public void StartSimulation(string environmentFile, string outputFile)
@@ -33,9 +38,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 grid = new Grid(environmentFile);
             }
 
+            // Create Rover.
             RoverParameters roverParameters = GetRoverParameters();
             rover = new Rover(roverParameters, grid);
 
+            EnterMainLoop();
+
+            // TODO: print results to output file
+        }
+
+        private void EnterMainLoop()
+        {
             // Simulation Loop
             while (true)
             {
@@ -54,9 +67,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     Console.WriteLine("-----> Move Limit Reached.");
                     break;
                 }
+                if (noPathFound)
+                {
+                    DisplayProgress();
+                    Console.WriteLine("-----> No Path Found!");
+                    break;
+                }
             }
-
-            // TODO: print results to output file
         }
 
         private GridParameters GetGridParameters()
@@ -161,6 +178,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             // Prompt user for RoverParameters
             return new RoverParameters();
         }
+
+        private void FlagNoPathFound() { noPathFound = true; }
 
         /// <summary>
         /// Display a text version of the grid, with markers for the Rover 'R',

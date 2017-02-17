@@ -44,11 +44,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 // Exit conditions.
                 if (rover.Position.Equals(grid.goalPosition))
                 {
+                    DisplayProgress();
                     Console.WriteLine("-----> Goal Reached!");
                     break;
                 }
                 if (rover.MoveCount >= MoveLimit)
                 {
+                    DisplayProgress();
                     Console.WriteLine("-----> Move Limit Reached.");
                     break;
                 }

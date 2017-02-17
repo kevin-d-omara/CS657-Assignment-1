@@ -51,7 +51,107 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         private GridParameters GetGridParameters()
         {
-            // Prompt user for GridParameters
+            GridParameters gridParams;
+
+            Console.WriteLine("Enter Grid Parameters: ");
+            Console.WriteLine("D) Default");
+            Console.WriteLine("M) Manual");
+            Console.WriteLine("R) Read custom grid from file");
+            char choice = Console.ReadKey().KeyChar;
+            Console.WriteLine();
+            switch(choice)
+            {
+                case 'm':
+                case 'M':
+                    gridParams = ManuallyEnterGridParameters();
+                    break;
+                case 'r':
+                case 'R':
+                    gridParams = ReadCustomGrid();
+                    break;
+                default:
+                    // default parameters
+                    gridParams = new GridParameters();
+                    break;
+            }
+
+            return gridParams;
+        }
+
+        private GridParameters ManuallyEnterGridParameters()
+        {
+            var gridParams = new GridParameters();
+
+            Console.WriteLine("Height: ");
+            Console.WriteLine("Width: ");
+            Console.WriteLine("Start Position (x y): ");
+            Console.WriteLine("Goal  Position (x y): ");
+            Console.WriteLine("Obstacle Density (0.0 to 1.0): ");
+            Console.WriteLine("Obstacle Types (y or n):");
+            Console.WriteLine("                Wall - ");
+            Console.WriteLine("                Pit  - ");
+
+            Console.SetCursorPosition(8, Console.CursorTop - 8);
+            gridParams.height = Convert.ToInt32(Console.ReadLine());
+
+            Console.SetCursorPosition(7, Console.CursorTop);
+            gridParams.width = Convert.ToInt32(Console.ReadLine());
+
+            Console.SetCursorPosition(22, Console.CursorTop);
+            string[] position = Console.ReadLine().Split(null);
+            gridParams.startPosition = new Vector2(
+                (float)Convert.ToDouble(position[0]),
+                (float)Convert.ToDouble(position[0]));
+
+            Console.SetCursorPosition(22, Console.CursorTop);
+            position = Console.ReadLine().Split(null);
+            gridParams.goalPosition = new Vector2(
+                (float)Convert.ToDouble(position[0]),
+                (float)Convert.ToDouble(position[0]));
+
+            Console.SetCursorPosition(31, Console.CursorTop);
+            gridParams.obstacleDensity = 
+                (float)Convert.ToDouble(Console.ReadLine());
+
+            // Choose Obstacle Types
+            gridParams.obstacleTypes = new List<Cell.Type>();
+            Console.SetCursorPosition(23, Console.CursorTop + 1);
+            char choice = Convert.ToChar(Console.ReadLine());
+            if (choice == 'y' || choice == 'Y')
+            {
+                gridParams.obstacleTypes.Add(Cell.Type.Wall);
+            }
+            Console.SetCursorPosition(23, Console.CursorTop);
+            choice = Convert.ToChar(Console.ReadLine());
+            if (choice == 'y' || choice == 'Y')
+            {
+                gridParams.obstacleTypes.Add(Cell.Type.Pit);
+            }
+
+            return gridParams;
+        }
+
+        private GridParameters ReadCustomGrid()
+        {
+            Console.WriteLine("Expected format:");
+            Console.WriteLine("    Floor - '1' or '.'");
+            Console.WriteLine("    Wall  - '0' or 'X'");
+            Console.WriteLine("    Pit   - '2' or '_'");
+            Console.WriteLine("    Rover - 'R' or '8'");
+            Console.WriteLine("    Goal  - 'G' or '9'");
+            Console.WriteLine("Example file contents:");
+            Console.WriteLine("R.X.._      810112      R.X.._");
+            Console.WriteLine("...X.X  or  111010  or  11.0.X");
+            Console.WriteLine("X_.X..      021011      X2.X..");
+            Console.WriteLine(".X...G      101119      .01..9");
+
+            Console.WriteLine("Enter the filename including extension");
+            Console.WriteLine("(i.e. Test1.map or Test1.txt): ");
+            string filename = Console.ReadLine();
+            string[] map = System.IO.File.ReadAllLines(filename);
+            
+
+
             return new GridParameters();
         }
 

@@ -42,6 +42,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 this.direction = direction;
             }
         }
+        // Store the allowed movements and their associated costs. Ex: SideRight
+        // Costs 2 because it consists of Rotate +45 and Move ForwardRight.
         private readonly Move[] adjacentCells = new Move[]
         {
             new Move(1, Direction.Forward),
@@ -60,8 +62,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             this.start = start;
             this.goal = goal;
             this.startFacing = startFacing;
-            // shallow copy the stack: TODO - determine that the objects are in the correct order.
-            this.previousMoves = new Stack<Rover.ActionRecord>(previousMoves);
+            // Twice nested "new Stack<>()" to get correct ordering.
+            this.previousMoves = new Stack<Rover.ActionRecord>(
+                new Stack<Rover.ActionRecord>(previousMoves));
 
             Search();
         }
@@ -71,29 +74,58 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             var startNode = new Node(start);
             var startPath = new Path(startNode, 0, startFacing);
             startNode.Append(startPath);
+            // TODO: nodes.Add("startCell", startNode);
             // Frontier is the open set of nodes to be explored.
             var frontier = new SimplePriorityQueue<Node, int>();
             frontier.Enqueue(startNode, 0);
 
             // Create and Enqueue all Nodes the Rover has been to prior.
             // This allows the Rover to benefit from the Revert action.
-            while (previousMoves.Count > 0)
             {
-                // TODO + verify shallow copy stack is in the correct order
+                var revertCount = 0;
+                var currentNode = startNode;
+                while (previousMoves.Count > 0)
+                {
+                    ++revertCount;
+                    var priorMove = previousMoves.Pop();
+                    var priorCell = grid.Position[(int)priorMove.Position.x,
+                        (int)priorMove.Position.y];
+
+                    if(nodes.TryGetValue(priorCell, out Node priorNode))
+                    { }
+                    else
+                    {
+                        priorNode = new Node(priorMove.Position);
+                        priorNode.Append(new Path(currentNode, revertCount,
+                            priorMove.Facing));
+                        nodes.Add(priorCell, priorNode);
+                        frontier.Enqueue(priorNode, revertCount);
+                    }
+
+                    currentNode = priorNode;
+                }
             }
 
             // Create and Enqueue the Node directly Backward from the
             // starting Node. This allows the Rover to "back out" of a
             // blocked start.
-            var rearFacing = startFacing.ToBearing(Direction.Backward);
-            var offset = rearFacing.ToCoordinateOffset();
-            var rearPos = new Vector2((start.x + offset.x), (start.y + offset.y));
-            var rearCell = grid.Position[(int)rearPos.x, (int)rearPos.y];
-            if (!rearCell.blocksMove)
             {
-                var rearNode = new Node(rearPos);
-                rearNode.Append((new Path(startNode, 4, rearFacing)));
-                frontier.Enqueue(rearNode, 4);
+                var rearFacing = startFacing.ToBearing(Direction.Backward);
+                var offset = rearFacing.ToCoordinateOffset();
+                var rearPos = new Vector2((start.x + offset.x),
+                    (start.y + offset.y));
+                var rearCell = grid.Position[(int)rearPos.x, (int)rearPos.y];
+                if (!rearCell.blocksMove)
+                {
+                    if (nodes.TryGetValue(rearCell, out Node rearNode))
+                    { }
+                    else
+                    {
+                        rearNode = new Node(rearPos);
+                        rearNode.Append((new Path(startNode, 4, rearFacing)));
+                        frontier.Enqueue(rearNode, 4);
+                    }
+                }
             }
 
             // Explore the Frontier Nodes with priority given to the
@@ -193,6 +225,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             while (nextNode.Paths.Count > 0)
             {
                 shortestPath.Push(nextNode);
+                // Heuristic: always take the first available path (Paths[0]).
+                // All Paths on a Node have equal cost, but different facing.
                 nextNode = nextNode.Paths[0].from;
             }
 

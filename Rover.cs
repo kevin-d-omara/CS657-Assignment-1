@@ -125,7 +125,27 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
                 var direction = Facing.ToDirection(offset);
 
+                // Determine if nextNode is best reached by a Revert.
+                var shouldRevert = false;
+                {
+                    if (PreviousMoves.Count > 0 &&
+                        nextNode.pos.Equals(PreviousMoves.Peek().Position))
+                    {
+                        foreach (Path path in nextNode.Paths)
+                        {
+                            if (path.facing == PreviousMoves.Peek().Facing)
+                            {
+                                shouldRevert = true;
+                            }
+                        }
+                    }
+                }
+
                 // Consult Expert System Rules to determine the Action.
+                if (shouldRevert)
+                {
+                    action = new Action(Action.Type.Revert, Direction.Forward);
+                }
                 if (direction == Direction.Forward
                     || direction == Direction.ForwardLeft
                     || direction == Direction.ForwardRight)
@@ -141,7 +161,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 }
                 else // direction == Direction.Backward
                 {
-                    action = new Action(Action.Type.Revert, direction);
+                    action = new Action(Action.Type.Rotate,
+                        Direction.ForwardLeft);
                 }
             }
             else

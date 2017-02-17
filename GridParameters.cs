@@ -9,7 +9,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public int width = 30;
         public int height = 30;
 
-        public Vector2 startPosition = new Vector2(1, 1);
+        public Vector2 startPosition = new Vector2(6, 6);
         public Vector2 goalPosition;
 
         public float obstacleDensity = .50f;

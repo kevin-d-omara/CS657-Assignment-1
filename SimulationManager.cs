@@ -11,7 +11,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class SimulationManager
     {
         public const int MoveLimit = 400;
-        public const bool usingAI = true;
 
         private Grid grid;
         private Rover rover;
@@ -19,16 +18,23 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public SimulationManager() { Rover.OnUsedSonar += DisplayProgress; }
         ~SimulationManager() { Rover.OnUsedSonar -= DisplayProgress; }
 
-        public void StartSimulation()
+        public void StartSimulation(string environmentFile, string outputFile)
         {
-            // Setup
-            GridParameters gridParameters = GetGridParameters();
-            grid = new Grid(gridParameters);
+            // Create Grid.
+            if (environmentFile == "n/a")
+            {
+                // Default or Manual entry.
+                var gridParameters = GetGridParameters();
+                grid = new Grid(gridParameters);
+            }
+            else
+            {
+                // Create from File.
+                grid = new Grid(environmentFile);
+            }
 
-            // Rover database starts with no obstacles.
-            gridParameters.obstacleDensity = 0f;
             RoverParameters roverParameters = GetRoverParameters();
-            rover = new Rover(roverParameters, grid, gridParameters, usingAI);
+            rover = new Rover(roverParameters, grid);
 
             // Simulation Loop
             while (true)
@@ -47,6 +53,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     break;
                 }
             }
+
+            // TODO: print results to output file
         }
 
         private GridParameters GetGridParameters()
@@ -56,23 +64,14 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("Enter Grid Parameters: ");
             Console.WriteLine("D) Default");
             Console.WriteLine("M) Manual");
-            Console.WriteLine("R) Read custom grid from file");
-            char choice = Console.ReadKey().KeyChar;
-            Console.WriteLine();
-            switch(choice)
+            char choice = Convert.ToChar(Console.ReadLine());
+            if (choice == 'm' || choice == 'M')
             {
-                case 'm':
-                case 'M':
-                    gridParams = ManuallyEnterGridParameters();
-                    break;
-                case 'r':
-                case 'R':
-                    gridParams = ReadCustomGrid();
-                    break;
-                default:
-                    // default parameters
-                    gridParams = new GridParameters();
-                    break;
+                gridParams = ManuallyEnterGridParameters();
+            }
+            else
+            {
+                gridParams = new GridParameters();
             }
 
             return gridParams;

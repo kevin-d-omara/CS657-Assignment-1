@@ -41,18 +41,20 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly Grid environment;
 
         // Intelligent Control
-        public readonly bool usingAI;
-
         public readonly List<Sequence> allowedMovementSequences;
         public readonly List<Sequence> allowedSonarSequences;
 
-        public Rover(RoverParameters roverParams, Grid environment,
-            GridParameters gridParameters, bool usingAI)
+        public Rover(RoverParameters roverParams, Grid environment)
         {
-            Grid = new Grid(gridParameters);
-            Position = gridParameters.startPosition;
             this.environment = environment;
 
+            var emptyGridParameters = new GridParameters(
+                environment.height, environment.width,
+                environment.startPosition, environment.goalPosition,
+                0.0f, environment.obstacleTypes);
+
+            Grid = new Grid(emptyGridParameters);
+            Position = Grid.startPosition;
             Facing = roverParams.facing;
 
             // Deep copy lists.
@@ -66,14 +68,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 allowedSonarSequences.Add(sequence);
             }
-
-            this.usingAI = usingAI;
         }
 
         public void Update()
         {
             DetectEnvironmentWithSonar();
-            if (usingAI) Console.ReadKey();
+            // Pause before advancing.
+            Console.ReadKey();
 
             Action action = ChooseAction();
 
@@ -113,108 +114,77 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             Action action;
 
-            if (usingAI)
+            // Run A* search.
+            var aStarSearch = new AStarSearch(Grid, Position, Facing,
+                Grid.goalPosition, PreviousMoves);
+            var shortestPath = aStarSearch.GetShortestPath();
+
+            if (shortestPath.Count == 0)
             {
-                // Run A* search.
-                var aStarSearch = new AStarSearch(Grid, Position, Facing,
-                    Grid.goalPosition, PreviousMoves);
-                var shortestPath = aStarSearch.GetShortestPath();
+                Console.WriteLine("-----> No Path Found!"); // TODO: make this stop the simulation
+            }
 
-                if (shortestPath.Count == 0)
+            // Determine Direction relative to the Rover of the first move.
+            var nextNode = shortestPath.Pop();
+            var offset = new Vector2(nextNode.pos.x - Position.x,
+                nextNode.pos.y - Position.y);
+
+            var direction = Facing.ToDirection(offset);
+
+            // Determine if nextNode is best reached by a Revert.
+            var shouldRevert = false;
+            if (PreviousMoves.Count > 0)
+            {
+                var prevMove = PreviousMoves.Peek();
+
+                // Case 1: Rover's previous Action was Move.
+                if (nextNode.pos.Equals(prevMove.Position))
                 {
-                    Console.WriteLine("-----> No Path Found!"); // TODO: make this stop the simulation
-                }
-
-                // Determine Direction relative to the Rover of the first move.
-                var nextNode = shortestPath.Pop();
-                var offset = new Vector2(nextNode.pos.x - Position.x,
-                    nextNode.pos.y - Position.y);
-
-                var direction = Facing.ToDirection(offset);
-
-                // Determine if nextNode is best reached by a Revert.
-                var shouldRevert = false;
-                if (PreviousMoves.Count > 0)
-                {
-                    var prevMove = PreviousMoves.Peek();
-
-                    // Case 1: Rover's previous Action was Move.
-                    if (nextNode.pos.Equals(prevMove.Position))
+                    foreach (Path path in nextNode.Paths)
                     {
-                        foreach (Path path in nextNode.Paths)
+                        if (path.facing == prevMove.Facing)
                         {
-                            if (path.facing == prevMove.Facing)
-                            {
-                                shouldRevert = true;
-                                break;
-                            }
-                        }
-                    }
-                    // Case 2: Rover's previous Action was Rotate.
-                    else
-                    {
-                        foreach (Path path in nextNode.Paths)
-                        {
-                            if (path.from.pos.Equals(prevMove.Position))
-                            {
-                                shouldRevert = true;
-                                break;
-                            }
+                            shouldRevert = true;
+                            break;
                         }
                     }
                 }
-
-                // Consult Expert System Rules to determine the Action.
-                if (shouldRevert)
+                // Case 2: Rover's previous Action was Rotate.
+                else
                 {
-                    action = new Action(Action.Type.Revert, Direction.Forward);
-                }
-                if (direction == Direction.Forward
-                    || direction == Direction.ForwardLeft
-                    || direction == Direction.ForwardRight)
-                {
-                    action = new Action(Action.Type.Move, direction);
-                }
-                else if (direction == Direction.SideLeft
-                    || direction == Direction.SideRight
-                    || direction == Direction.BackwardLeft
-                    || direction == Direction.BackwardRight)
-                {
-                    action = new Action(Action.Type.Rotate, direction);
-                }
-                else // direction == Direction.Backward
-                {
-                    action = new Action(Action.Type.Rotate,
-                        Direction.ForwardLeft);
+                    foreach (Path path in nextNode.Paths)
+                    {
+                        if (path.from.pos.Equals(prevMove.Position))
+                        {
+                            shouldRevert = true;
+                            break;
+                        }
+                    }
                 }
             }
-            else
+
+            // Consult Expert System Rules to determine the Action.
+            if (shouldRevert)
             {
-                var keyInfo = Console.ReadKey();
-                switch ((char)keyInfo.Key)
-                {
-                    case 'W':
-                        action = new Action(Action.Type.Move, Direction.Forward);
-                        break;
-                    case 'A':
-                        action = new Action(Action.Type.Move, Direction.ForwardLeft);
-                        break;
-                    case 'D':
-                        action = new Action(Action.Type.Move, Direction.ForwardRight);
-                        break;
-                    case 'Q':
-                        action = new Action(Action.Type.Rotate, Direction.ForwardLeft);
-                        break;
-                    case 'E':
-                        action = new Action(Action.Type.Rotate, Direction.ForwardRight);
-                        break;
-                    case 'S':
-                        action = new Action(Action.Type.Revert, Direction.ForwardLeft);
-                        break;
-                    default:
-                        action = new Action(Action.Type.Move, Direction.Forward);
-                        break;
-                }
+                action = new Action(Action.Type.Revert, Direction.Forward);
+            }
+            if (direction == Direction.Forward
+                || direction == Direction.ForwardLeft
+                || direction == Direction.ForwardRight)
+            {
+                action = new Action(Action.Type.Move, direction);
+            }
+            else if (direction == Direction.SideLeft
+                || direction == Direction.SideRight
+                || direction == Direction.BackwardLeft
+                || direction == Direction.BackwardRight)
+            {
+                action = new Action(Action.Type.Rotate, direction);
+            }
+            else // direction == Direction.Backward
+            {
+                action = new Action(Action.Type.Rotate,
+                    Direction.ForwardLeft);
             }
 
             return action;

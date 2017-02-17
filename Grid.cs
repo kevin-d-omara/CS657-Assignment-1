@@ -56,6 +56,16 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             PlaceObstacles();
         }
 
+        /// <summary>
+        /// Create Grid by reading from a file.
+        /// </summary>
+        /// <param name="filename">Filename, including extension (i.e. Map1.txt 
+        /// or Map1.map)</param>
+        public Grid(string filename)
+        {
+
+        }
+
         public List<Cell> RaycastFrom(Vector2 initialPosition,
             Bearing initialFacing, Sequence sequence)
         {

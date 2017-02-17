@@ -31,7 +31,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // Percent of cells with an obstacle (0.0 to 1.0).
         public readonly float obstacleDensity;
         // Obstacle types to randomize between.
-        public readonly List<Cell.Type> obstacleTypes;
+        public readonly List<Cell.Type> obstacleTypes = new List<Cell.Type>();
 
         // Discludes 'wall' border, 'startPos', and 'endPos'.
         private List<Vector2> validObstaclePositions = new List<Vector2>();
@@ -43,7 +43,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             startPosition = new Vector2(gParms.startPosition.x, gParms.startPosition.y);
             goalPosition = new Vector2(gParms.goalPosition.x, gParms.goalPosition.y);
             obstacleDensity = gParms.obstacleDensity;
-            obstacleTypes = new List<Cell.Type>();
             foreach (Cell.Type type in gParms.obstacleTypes)
             {
                 obstacleTypes.Add(type);
@@ -63,7 +62,57 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// or Map1.map)</param>
         public Grid(string filename)
         {
+            string[] lines = System.IO.File.ReadAllLines(filename);
 
+            width = lines[0].Length;
+            height = lines.Length;
+            CreateEmptyBoard();
+
+            int obstacleCount = 0;
+            var obstacleTypesFound = new Dictionary<Cell.Type, bool>();
+            obstacleTypesFound.Add(Cell.Type.Wall, false);
+            obstacleTypesFound.Add(Cell.Type.Pit, false);
+
+            for (int y = 1; y <= height; ++y)
+            {
+                for (int x = 1; x <= width; ++x)
+                {
+                    char cell = lines[y - 1][x - 1];
+
+                    // Wall
+                    if (cell == '0' || cell == 'X')
+                    {
+                        ++obstacleCount;
+                        Position[x, y] = new Cell(Cell.Type.Wall, x, y);
+                        obstacleTypesFound[Cell.Type.Wall] = true;
+                    }
+                    // Pit
+                    else if (cell == '2' || cell == '_')
+                    {
+                        ++obstacleCount;
+                        Position[x, y] = new Cell(Cell.Type.Pit, x, y);
+                        obstacleTypesFound[Cell.Type.Pit] = true;
+                    }
+                    // Rover
+                    else if (cell == '8' || cell == 'R')
+                    {
+                        startPosition = new Vector2(x, y);
+                    }
+                    // Goal
+                    else if (cell == '9' || cell == 'G')
+                    {
+                        goalPosition = new Vector2(x, y);
+                    }
+                    // Floor
+                    else if (cell == '1' || cell == '.' || cell == ' ') {}
+                }
+            }
+
+            obstacleDensity = (float)obstacleCount / (float)(width * height);
+            foreach (KeyValuePair<Cell.Type, bool> type in obstacleTypesFound)
+            {
+                if (type.Value == true) { obstacleTypes.Add(type.Key); }
+            }
         }
 
         public List<Cell> RaycastFrom(Vector2 initialPosition,

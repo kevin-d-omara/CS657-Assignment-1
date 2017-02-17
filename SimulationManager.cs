@@ -16,7 +16,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private Grid grid;
         private Rover rover;
 
-        public SimulationManager() { }
+        public SimulationManager() { Rover.OnUsedSonar += DisplayProgress; }
+        ~SimulationManager() { Rover.OnUsedSonar -= DisplayProgress; }
 
         public void StartSimulation()
         {
@@ -30,12 +31,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             rover = new Rover(roverParameters, grid, gridParameters, usingAI);
 
             // Simulation Loop
-            DisplayProgress();
             while (true)
             {
-                if (usingAI) Console.ReadKey();
                 rover.Update();
-                DisplayProgress();
 
                 // Exit conditions.
                 if (rover.Position.Equals(grid.goalPosition))

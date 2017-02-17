@@ -11,6 +11,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class Rover
     {
+        // Events & Delegates
+        public delegate void UsedSonar();
+        public static event UsedSonar OnUsedSonar;
+
         // State
         public Vector2 Position { get; private set; }
         public Bearing Facing { get; private set; }
@@ -69,6 +73,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public void Update()
         {
             DetectEnvironmentWithSonar();
+            if (usingAI) Console.ReadKey();
 
             Action action = ChooseAction();
 
@@ -97,6 +102,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     }
                 }
             }
+
+            if (OnUsedSonar != null) { OnUsedSonar(); }
         }
 
         /// <summary>
@@ -127,15 +134,31 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
                 // Determine if nextNode is best reached by a Revert.
                 var shouldRevert = false;
+                if (PreviousMoves.Count > 0)
                 {
-                    if (PreviousMoves.Count > 0 &&
-                        nextNode.pos.Equals(PreviousMoves.Peek().Position))
+                    var prevMove = PreviousMoves.Peek();
+
+                    // Case 1: Rover's previous Action was Move.
+                    if (nextNode.pos.Equals(prevMove.Position))
                     {
                         foreach (Path path in nextNode.Paths)
                         {
-                            if (path.facing == PreviousMoves.Peek().Facing)
+                            if (path.facing == prevMove.Facing)
                             {
                                 shouldRevert = true;
+                                break;
+                            }
+                        }
+                    }
+                    // Case 2: Rover's previous Action was Rotate.
+                    else
+                    {
+                        foreach (Path path in nextNode.Paths)
+                        {
+                            if (path.from.pos.Equals(prevMove.Position))
+                            {
+                                shouldRevert = true;
+                                break;
                             }
                         }
                     }

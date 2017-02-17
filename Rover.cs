@@ -51,7 +51,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             this.environment = environment;
 
             var emptyGridParameters = new GridParameters(
-                environment.height, environment.width,
+                environment.width, environment.height,
                 environment.startPosition, environment.goalPosition,
                 0.0f, environment.obstacleTypes);
 

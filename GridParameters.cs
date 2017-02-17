@@ -6,13 +6,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class GridParameters
     {
         // All fields set to default value.
-        public int width = 8;
-        public int height = 8;
+        public int width = 30;
+        public int height = 30;
 
         public Vector2 startPosition = new Vector2(1, 1);
         public Vector2 goalPosition;
 
-        public float obstacleDensity = .25f;
+        public float obstacleDensity = .50f;
         public List<Cell.Type> obstacleTypes = new List<Cell.Type>
             { Cell.Type.Wall };
 

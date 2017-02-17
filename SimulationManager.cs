@@ -10,7 +10,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 30;
+        public const int MoveLimit = 400;
         public const bool usingAI = true;
 
         private Grid grid;

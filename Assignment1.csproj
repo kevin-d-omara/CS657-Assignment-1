@@ -45,6 +45,7 @@
     <Compile Include="GridParameters.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Path.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rover.cs" />
     <Compile Include="RoverParameters.cs" />
     <Compile Include="Sequence.cs" />

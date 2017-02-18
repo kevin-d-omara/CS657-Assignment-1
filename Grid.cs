@@ -216,5 +216,20 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     (int)randPos.x, (int)randPos.y);
             }
         }
+
+        public char[,] ToImage()
+        {
+            var image = new char[width + 2 * buffer, height + 2 * buffer];
+
+            for (int y = 0; y <= height + 1; ++y)
+            {
+                for (int x = 0; x <= width + 1; ++x)
+                {
+                    image[x, y] = Position[x, y].image;
+                }
+            }
+
+            return image;
+        }
     }
 }

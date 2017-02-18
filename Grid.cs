@@ -113,6 +113,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 if (type.Value == true) { obstacleTypes.Add(type.Key); }
             }
+
+            if (startPosition == null)
+            {
+                var x = width > 6 ? 6 : 1;
+                var y = height > 6 ? 6 : 1;
+                startPosition = new Vector2(x, y);
+            }
+            if (goalPosition == null)
+            {
+                goalPosition = new Vector2(width, height);
+            }
         }
 
         public List<Cell> RaycastFrom(Vector2 initialPosition,

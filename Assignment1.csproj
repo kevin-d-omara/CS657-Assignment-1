@@ -49,6 +49,7 @@
     <Compile Include="RoverParameters.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="SimulationManager.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Vector2.cs" />
   </ItemGroup>
   <ItemGroup>

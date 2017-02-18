@@ -5,6 +5,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     public class Driver
     {
+        // ../../Maps/test_revert_2.map ../../Output/results.txt
+
         // TODO: include switches:
         // -h, --help  -> display CL paramter options
         // -q, --quiet -> suppress CL output
@@ -19,10 +21,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             if (args.Length == 0)
             {
-                Console.WriteLine("No environment filename given. Using " +
-                    "default parameters.");
+                Console.WriteLine("No environment filename given. Select option" +
+                    "from menu.");
                 Console.WriteLine("No output filename given. Outputting " +
                     "results to: 'results.txt'");
+                outFile = "results.txt";
             }
             else if (args.Length == 1)
             {
@@ -38,12 +41,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 outFile =  args[1];
                 Console.WriteLine("Reading environment from: " + envFile);
                 Console.WriteLine("Outputting results to: " + outFile);
-                outFile = "results.txt";
             }
             else
             {
                 Console.WriteLine("Too many arguments specified.");
-                Console.WriteLine("Using default parameters.");
+                Console.WriteLine("Select option from menu.");
                 Console.WriteLine("Outputting results to: 'results.txt'");
                 outFile = "results.txt";
             }

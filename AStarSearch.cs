@@ -74,7 +74,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             var startNode = new Node(start);
             var startPath = new Path(startNode, 0, startFacing);
             startNode.Append(startPath);
-            // TODO: nodes.Add("startCell", startNode);
+            var startCell = grid.Position[(int)start.x, (int)start.y];
+            nodes.Add(startCell, startNode);
             // Frontier is the open set of nodes to be explored.
             var frontier = new SimplePriorityQueue<Node, int>();
             frontier.Enqueue(startNode, 0);
@@ -92,12 +93,15 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                         (int)priorMove.Position.y];
 
                     if(nodes.TryGetValue(priorCell, out Node priorNode))
-                    { }
+                    {
+                        // TODO - handle this case
+                    }
                     else
                     {
                         priorNode = new Node(priorMove.Position);
                         priorNode.Append(new Path(currentNode, revertCount,
                             priorMove.Facing));
+                        priorNode.Paths[0].wasRevertAction = true;
                         nodes.Add(priorCell, priorNode);
                         frontier.Enqueue(priorNode, revertCount);
                     }
@@ -225,9 +229,25 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             while (nextNode.Paths.Count > 0)
             {
                 shortestPath.Push(nextNode);
-                // Heuristic: always take the first available path (Paths[0]).
+
+                // Heuristic:
+                // If an available Path has 'wasReverAction' flagged, take it.
+                // Otherwise, take the first available path (Paths[0]). Note:
                 // All Paths on a Node have equal cost, but different facing.
-                nextNode = nextNode.Paths[0].from;
+                var wasRevertAction = false;
+                foreach (Path path in nextNode.Paths)
+                {
+                    if (path.wasRevertAction)
+                    {
+                        nextNode = path.from;
+                        wasRevertAction = true;
+                        break;
+                    }
+                }
+                if (!wasRevertAction)
+                {
+                    nextNode = nextNode.Paths[0].from;
+                }
             }
 
             return shortestPath;

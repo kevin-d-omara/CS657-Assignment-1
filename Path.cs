@@ -6,6 +6,8 @@
     /// </summary>
     public class Path
     {
+        public bool wasRevertAction = false;
+
         public readonly Node from;
         public readonly int cost;
         public readonly Bearing facing;

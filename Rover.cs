@@ -110,7 +110,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             DetectEnvironmentWithSonar();
             // Pause before advancing.
-            Console.ReadKey();
+            if (SimulationManager.flags["step"]) { Console.ReadKey(); }
 
             Action action = ChooseAction();
 

@@ -33,7 +33,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 case Type.Pit:
                     blocksMove = true;
                     blocksSonar = false;
-                    image = '_';
+                    image = '-';
                     break;
                 default:
                     throw new System.ArgumentException("Unsupported Cell.Type");

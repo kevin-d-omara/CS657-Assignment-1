@@ -6,6 +6,7 @@
     /// </summary>
     public class Path
     {
+        // True if this Node was reached through a Revert Action.
         public bool wasRevertAction = false;
 
         public readonly Node from;

@@ -243,6 +243,18 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                         wasRevertAction = true;
                         break;
                     }
+                    if (path.from.Paths.Count > 0)
+                    {
+                        foreach (Path innerPath in path.from.Paths)
+                        {
+                            if (innerPath.wasRevertAction)
+                            {
+                                nextNode = path.from;
+                                wasRevertAction = true;
+                                break;
+                            }
+                        }
+                    }
                 }
                 if (!wasRevertAction)
                 {

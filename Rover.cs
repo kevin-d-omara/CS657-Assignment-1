@@ -172,7 +172,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 action = new Action(Action.Type.Revert, Direction.Forward);
             }
-            if (direction == Direction.Forward
+            else if (direction == Direction.Forward
                 || direction == Direction.ForwardLeft
                 || direction == Direction.ForwardRight)
             {

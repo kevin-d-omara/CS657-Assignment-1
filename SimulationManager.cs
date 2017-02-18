@@ -10,7 +10,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 1000;
+        public int MoveLimit { get; private set; } = 1000;
         public static readonly Dictionary<string, bool> flags
             = new Dictionary<string, bool>();
 
@@ -23,6 +23,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             flags.Add("display", false);
             flags.Add("no-map", false);
             flags.Add("step", false);
+            flags.Add("unlimited", false);
 
             Rover.OnUsedSonar += DisplayProgress;
             Rover.OnNoPathFound += FlagNoPathFound;
@@ -35,6 +36,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         public void StartSimulation(string environmentFile, string outputFile)
         {
+            if (flags["unlimited"]) { MoveLimit = 999999; }
+
             // Create Grid.
             if (environmentFile == "n/a")
             {

@@ -8,10 +8,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         // ../../Maps/test_revert_2.map ../../Output/results.txt
 
         // TODO: include switches:
-        // -d, --display -> prints each step of progress to the CL
-        // -h, --help    -> display CL paramter options
-        // -n, --no-map  -> suppress Cl output of map
-        // -s, --step    -> press <enter> to step through the pathfinding
+        // -d, --display   -> prints each step of progress to the CL
+        // -h, --help      -> display CL paramter options
+        // -n, --no-map    -> suppress Cl output of map
+        // -s, --step      -> press <enter> to step through the pathfinding
+        // -u, --unlimited -> allows for unlimited move limit
         public static void Main(string[] allArgs)
         {
             SimulationManager simulationManager = new SimulationManager();
@@ -41,6 +42,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     case "--step":
                         args.Remove(arg);
                         SimulationManager.flags["step"] = true;
+                        break;
+                    case "-u":
+                    case "--unlimited":
+                        args.Remove(arg);
+                        SimulationManager.flags["unlimited"] = true;
                         break;
                     default:
                         break;
@@ -86,14 +92,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         private static void DisplayHelp()
         {
-            // ../../Maps/test_revert_2.map ../../Output/results.txt
-
-            // TODO: include switches:
-            // -d, --display -> prints each step of progress to the CL
-            // -h, --help    -> display CL paramter options
-            // -n, --no-map  -> suppress Cl output of map
-            // -s, --step    -> press <enter> to step through the pathfinding
-
             Console.WriteLine("NAME");
             Console.WriteLine("    Assignment1 - Watch expert AI guide a Rover back to base across the Martian surface.");
             Console.WriteLine("");
@@ -107,10 +105,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("    If no output filename is specified, a file with the name 'results.txt' will be created in the current directory.");
             Console.WriteLine("");
             Console.WriteLine("    Switches:");
-            Console.WriteLine("        -d, --display -> prints each step of progress to the command line");
-            Console.WriteLine("        -h, --help    -> display this menu");
-            Console.WriteLine("        -n, --no-map  -> supress command line output of the map (note: only works when used alongside -d or --display");
-            Console.WriteLine("        -s, --setp    -> press <enter> to advance after each step of the Rover's movement");
+            Console.WriteLine("        -d, --display   -> prints each step of progress to the command line");
+            Console.WriteLine("        -h, --help      -> display this menu");
+            Console.WriteLine("        -n, --no-map    -> supress command line output of the map (note: only works when used alongside -d or --display");
+            Console.WriteLine("        -s, --setp      -> press <enter> to advance after each step of the Rover's movement");
+            Console.WriteLine("        -u, --unlimited -> allows for unlimited move limit");
             Console.WriteLine("");
             Console.ReadKey();  // stop terminal from closing
         }

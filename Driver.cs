@@ -5,6 +5,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     public class Driver
     {
+        // TODO: include switches:
+        // -h, --help  -> display CL paramter options
+        // -q, --quiet -> suppress CL output
+        // -s, --step  -> press <enter> to step through the pathfinding
         public static void Main(string[] args)
         {
             SimulationManager simulationManager = new SimulationManager();

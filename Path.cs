@@ -9,14 +9,14 @@
         // True if this Node was reached through a Revert Action.
         public bool wasRevertAction = false;
 
-        public readonly Node from;
+        public readonly Path from;
         public readonly int cost;
         public readonly Bearing facing;
 
-        /// <param name="from">Node coming before this Node.</param>
+        /// <param name="from">Prior step in Path to this Path.</param>
         /// <param name="cost">Cumulative cost to reach this Node.</param>
         /// <param name="facing">Facing after moving into this Node.</param>
-        public Path(Node from, int cost, Bearing facing)
+        public Path(Path from, int cost, Bearing facing)
         {
             this.from = from;
             this.cost = cost;

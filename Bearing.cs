@@ -106,5 +106,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             int finalFacing = ((int)bearing + (int)direction) % 360;
             return (Bearing)finalFacing;
         }
+
+        /// <summary>
+        /// Transforms two Bearing's into a relative Direction between them.
+        /// </summary>
+        /// <returns>Direction of the destination relative to the source.
+        /// Example: Src = East, Dest = NorthEast -> Direction = ForwardLeft.
+        /// </returns>
+        public static Direction ToDirection(this Bearing source, Bearing dest)
+        {
+            int angularOffset = (360 + (dest - source)) % 360;
+            return (Direction)angularOffset;
+        }
     }
 }

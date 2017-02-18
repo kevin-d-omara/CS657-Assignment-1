@@ -129,24 +129,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             }
 
             // Determine Direction relative to the Rover of the first move.
-            var nextNode = shortestPath.Peek();
-            var offset = new Vector2(nextNode.pos.x - Position.x,
-                nextNode.pos.y - Position.y);
-            var direction = Facing.ToDirection(offset);
-
-            // Determine if nextNode is best reached by a Revert.
-            var shouldRevert = false;
-            foreach (Path path in nextNode.Paths)
-            {
-                if (path.wasRevertAction)
-                {
-                    shouldRevert = true;
-                    break;
-                }
-            }
+            var firstStep = shortestPath.Peek();
+            var direction = Facing.ToDirection(firstStep.facing);
 
             // Consult Expert System Rules to determine the Action.
-            if (shouldRevert)
+            if (firstStep.wasRevertAction)
             {
                 action = new Action(Action.Type.Revert, Direction.Forward);
             }

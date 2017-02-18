@@ -72,7 +72,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private void Search()
         {
             var startNode = new Node(start);
-            var startPath = new Path(startNode, 0, startFacing);
+            var startPath = new Path(null, 0, startFacing);
             startNode.Append(startPath);
             var startCell = grid.Position[(int)start.x, (int)start.y];
             nodes.Add(startCell, startNode);
@@ -99,8 +99,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     else
                     {
                         priorNode = new Node(priorMove.Position);
-                        priorNode.Append(new Path(currentNode, revertCount,
-                            priorMove.Facing));
+                        // At this point no existing nodes have more than one
+                        // Path, so we pick Paths[0].
+                        priorNode.Append(new Path(currentNode.Paths[0],
+                            revertCount, priorMove.Facing));
                         priorNode.Paths[0].wasRevertAction = true;
                         nodes.Add(priorCell, priorNode);
                         frontier.Enqueue(priorNode, revertCount);
@@ -126,7 +128,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     else
                     {
                         rearNode = new Node(rearPos);
-                        rearNode.Append((new Path(startNode, 4, rearFacing)));
+                        rearNode.Append((new Path(startNode.Paths[0], 4,
+                            rearFacing)));
                         frontier.Enqueue(rearNode, 4);
                     }
                 }
@@ -167,8 +170,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
                         if (nextNode.Paths.Count == 0)
                         {
-                            nextNode.Append(new Path(currentNode, newCost,
-                                newFacing));
+                            nextNode.Append(new Path(path, newCost, newFacing));
                             frontier.Enqueue(nextNode, newCost);
                         }
                         else // Count > 1
@@ -176,8 +178,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                             // All Paths in a Node have equal cost.
                             if (nextNode.Paths[0].cost > newCost)
                             {
-                                nextNode.Replace(new Path(currentNode,
-                                    newCost, newFacing));
+                                nextNode.Replace(new Path(path, newCost,
+                                    newFacing));
                                 frontier.UpdatePriority(nextNode, newCost);
                             }
                             else if (nextNode.Paths[0].cost == newCost)
@@ -194,16 +196,14 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                                 }
                                 if (shouldAppend)
                                 {
-                                    nextNode.Append(new Path(currentNode,
-                                        newCost, newFacing));
+                                    nextNode.Append(new Path(path, newCost,
+                                        newFacing));
                                 }
                             }
                         }
                     }
                 }
             }
-            // Prevent GetShortestPath() from hitting an infinite loop.
-            startNode.ClearPaths();
         }
 
         /// <summary>
@@ -212,13 +212,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// </summary>
         /// <returns>If a path exists, returns a Stack with the shortest path to
         /// the goal. Else, returns an empty Stack.</returns>
-        public Stack<Node> GetShortestPath()
+        public Stack<Path> GetShortestPath()
         {
-            var shortestPath = new Stack<Node>();
+            var shortestPath = new Stack<Path>();
 
             // Start with goal Node.
             if (nodes.TryGetValue(grid.Position[(int)goal.x, (int)goal.y],
-                out Node nextNode))
+                out Node goalNode))
             { }
             // Exit early if goal wasn't reached.
             else
@@ -226,40 +226,24 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 return shortestPath;
             }
 
-            while (nextNode.Paths.Count > 0)
+            // Choose the first Path starting at the Goal.
+            Path nextPath = null;
+            foreach (Path path in goalNode.Paths)
             {
-                shortestPath.Push(nextNode);
+                // Priority is given to Paths utilizing the Revert Action.
+                if (path.wasRevertAction)
+                {
+                    nextPath = path;
+                    break;
+                }
+            }
+            if (nextPath == null) { nextPath = goalNode.Paths[0]; }
 
-                // Heuristic:
-                // If an available Path has 'wasReverAction' flagged, take it.
-                // Otherwise, take the first available path (Paths[0]). Note:
-                // All Paths on a Node have equal cost, but different facing.
-                var wasRevertAction = false;
-                foreach (Path path in nextNode.Paths)
-                {
-                    if (path.wasRevertAction)
-                    {
-                        nextNode = path.from;
-                        wasRevertAction = true;
-                        break;
-                    }
-                    if (path.from.Paths.Count > 0)
-                    {
-                        foreach (Path innerPath in path.from.Paths)
-                        {
-                            if (innerPath.wasRevertAction)
-                            {
-                                nextNode = path.from;
-                                wasRevertAction = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (!wasRevertAction)
-                {
-                    nextNode = nextNode.Paths[0].from;
-                }
+            // Null Path belongs to the Start Node.
+            while (nextPath.from != null)
+            {
+                shortestPath.Push(nextPath);
+                nextPath = nextPath.from;
             }
 
             return shortestPath;

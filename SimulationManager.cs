@@ -68,7 +68,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             var efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
             t.Add(String.Format("A*+    | {0,4}  |  {1,6:0.00}%",
                 shortestPath.Count, efficiency * 100f));
-            t.Add("");
+            t.Add("______________________________________________________________");
 
             // Action Breakdown ------------------------------------------------
             t.Add("Action Breakdown:");
@@ -78,35 +78,28 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             // Move
             t.Add("    Move: " + moveActionCount);
             var len = Utils.digitsIn(moveActionCount);
-            t.Add(String.Format("        Forward      {0," + len +"}/{1}",
-                rover.MoveBreakdown["Move_Forward"], moveActionCount));
-            t.Add(String.Format("        ForwardLeft  {0," + len + "}/{1}",
-                rover.MoveBreakdown["Move_ForwardLeft"], moveActionCount));
-            t.Add(String.Format("        ForwardRight {0," + len + "}/{1}",
-                rover.MoveBreakdown["Move_ForwardRight"], moveActionCount));
+            t.Add(String.Format("        Forward      {0," + len +"}/{1} ({2:0.00}%)",  rover.MoveBreakdown["Move_Forward"],      moveActionCount, (float)rover.MoveBreakdown["Move_Forward"]      / moveActionCount * 100f));
+            t.Add(String.Format("        ForwardLeft  {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Move_ForwardLeft"],  moveActionCount, (float)rover.MoveBreakdown["Move_ForwardLeft"]  / moveActionCount * 100f));
+            t.Add(String.Format("        ForwardRight {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Move_ForwardRight"], moveActionCount, (float)rover.MoveBreakdown["Move_ForwardRight"] / moveActionCount * 100f));
 
             // Rotate
             var rotateActionCount = rover.MoveBreakdown["Rotate_Left"]
                                   + rover.MoveBreakdown["Rotate_Right"];
             t.Add("    Rotate: " + rotateActionCount);
             len = Utils.digitsIn(rotateActionCount);
-            t.Add(String.Format("        Left  {0," + len + "}/{1}",
-                rover.MoveBreakdown["Rotate_Left"], rotateActionCount));
-            t.Add(String.Format("        Right {0," + len + "}/{1}",
-                rover.MoveBreakdown["Rotate_Right"], rotateActionCount));
+            t.Add(String.Format("        Left  {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Rotate_Left"],  rotateActionCount, (float)rover.MoveBreakdown["Rotate_Left"]  / rotateActionCount * 100f));
+            t.Add(String.Format("        Right {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Rotate_Right"], rotateActionCount, (float)rover.MoveBreakdown["Rotate_Right"] / rotateActionCount * 100f));
 
             // Revert
             var revertActionCount = rover.MoveBreakdown["Revert_Move"]
                                   + rover.MoveBreakdown["Revert_Rotate"];
             t.Add("    Revert: " + revertActionCount);
             len = Utils.digitsIn(revertActionCount);
-            t.Add(String.Format("        Move   {0," + len + "}/{1}",
-                rover.MoveBreakdown["Revert_Move"], revertActionCount));
-            t.Add(String.Format("        Rotate {0," + len + "}/{1}",
-                rover.MoveBreakdown["Revert_Rotate"], revertActionCount));
+            t.Add(String.Format("        Move   {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Revert_Move"],   revertActionCount, (float)rover.MoveBreakdown["Revert_Move"]   / revertActionCount * 100f));
+            t.Add(String.Format("        Rotate {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Revert_Rotate"], revertActionCount, (float)rover.MoveBreakdown["Revert_Rotate"] / revertActionCount * 100f));
+            t.Add("______________________________________________________________");
 
             // Environment Breakdown--------------------------------------------
-            t.Add("");
             t.Add("Environment:");
             //WISE 0855−0714 
             var randomPlanet = Utils.randomString(Utils.upperChars, 4) + " "
@@ -117,22 +110,48 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 + Utils.randomString(Utils.alphaChars, 2) + "."
                 + Utils.randomString(Utils.alphaChars, 3);
 
+            // Categorize Cells detected.
+            var detectObstacleCount = 0;
+            var detectNonObstacleCount = 0;
+            foreach (Cell cell in rover.DetectedCells)
+            {
+                // Discount buffer Cells.
+                if (cell.x > 0 && cell.x < grid.width &&
+                    cell.y > 0 && cell.y < grid.height)
+                {
+                    if (cell.type == Cell.Type.Floor)
+                    {
+                        ++detectNonObstacleCount;
+                    }
+                    else
+                    {
+                        ++detectObstacleCount;
+                    }
+                }
+            }
+            var totalCellsDetected = detectObstacleCount + detectNonObstacleCount;
+            var detectedObstacleDensity = (float)detectObstacleCount
+                / (float)totalCellsDetected;
+
             t.Add("    Planet: " + randomPlanet);
             t.Add("    Sector: " + randomSector);
             t.Add("    Dimensions:");
-            t.Add("        Width  - " + grid.width + "m");
-            t.Add("        Height - " + grid.height + "m");
-            t.Add("        Area   - " + grid.width * grid.height + "m^2");
+            t.Add("        Width    - " + grid.width + "m");
+            t.Add("        Height   - " + grid.height + "m");
+            t.Add("        Area     - " + grid.width * grid.height + "m^2");
+            t.Add(String.Format("        Explored - {0}m^2 ({1:0.00}%)", totalCellsDetected, (float)totalCellsDetected / (grid.width * grid.height) * 100f));
+
             t.Add("    Obstructions:");
-            t.Add("        Encountered     - ");
-            t.Add("        Approx. Density - ");
-            t.Add(String.Format("        Actual  Density - {0:0.00}%",
-                grid.obstacleDensity * 100f));
-            t.Add(String.Format("                          {0:0.00}/m^2",
-                grid.obstacleDensity * 100f));
+            t.Add("        Encountered      - " + detectObstacleCount);
+            t.Add(String.Format("        Observed Density - {0:0.00}/m^2 " +
+                "({1:0.00}%)",
+                detectedObstacleDensity, detectedObstacleDensity * 100));
+            t.Add(String.Format("        Actual   Density - {0:0.00}/m^2 " +
+                "({1:0.00}%)",
+                grid.obstacleDensity, grid.obstacleDensity * 100f));
+            t.Add("______________________________________________________________");
 
             // Environment Map -------------------------------------------------
-            t.Add("");
             t.Add("Environment Map:");
             var environmentMap = grid.ToImage();
             environmentMap[(int)grid.startPosition.x, (int)grid.startPosition.y]
@@ -192,19 +211,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 }
                 t.Add(line);
             }
-
-            //  12345678901234567890
-            // 1 R...
-            // 2.RR.
-            // 3.R..
-            // 4...G
-            // 5
-            // 6
-            // 7
-            // 8
-            // 9
-            //10
-            t.Add("");
+            t.Add("______________________________________________________________");
 
             // Path Taken ------------------------------------------------------
             t.Add("Path Taken:");

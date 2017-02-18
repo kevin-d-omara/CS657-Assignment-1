@@ -28,6 +28,19 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public Queue<ActionRecord> ActionHistory { get; private set; }
             = new Queue<ActionRecord>();
 
+        // Database
+        public Grid Grid { get; private set; }
+        public HashSet<Cell> DetectedCells { get; private set; }
+            = new HashSet<Cell>();
+
+        // Actual environment being traversed: used for Sonar detection.
+        public readonly Grid environment;
+
+        // Intelligent Control
+        public readonly List<Sequence> allowedMovementSequences;
+        public readonly List<Sequence> allowedSonarSequences;
+
+        // Nested Classes
         public class MoveRecord
         {
             public Vector2 Position { get; private set; }
@@ -52,16 +65,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 Facing = facing;
             }
         }
-
-        // Database
-        public Grid Grid { get; private set; }
-
-        // Actual environment being traversed.
-        public readonly Grid environment;
-
-        // Intelligent Control
-        public readonly List<Sequence> allowedMovementSequences;
-        public readonly List<Sequence> allowedSonarSequences;
 
         public Rover(RoverParameters roverParams, Grid environment)
         {
@@ -88,6 +91,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 allowedSonarSequences.Add(sequence);
             }
 
+            // Data initialization for Database
             MoveBreakdown = new Dictionary<string, int>();
             MoveBreakdown.Add("Move_Forward", 0);
             MoveBreakdown.Add("Move_ForwardLeft", 0);
@@ -96,7 +100,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             MoveBreakdown.Add("Rotate_Right", 0);
             MoveBreakdown.Add("Revert_Move", 0);
             MoveBreakdown.Add("Revert_Rotate", 0);
-
+            
             // Record starting location.
             ActionHistory.Enqueue(new ActionRecord(Action.Type.Start, Position,
                 Facing));
@@ -132,6 +136,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     {
                         Grid.Position[cell.x, cell.y] = new Cell(cell.type,
                             cell.x, cell.y);
+                    }
+
+                    if (!DetectedCells.Contains(cell))
+                    {
+                        DetectedCells.Add(cell);
                     }
                 }
             }

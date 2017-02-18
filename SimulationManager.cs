@@ -10,7 +10,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// </summary>
     public class SimulationManager
     {
-        public const int MoveLimit = 400;
+        public const int MoveLimit = 1000;
 
         private Grid grid;
         private Rover rover;
@@ -42,13 +42,103 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             RoverParameters roverParameters = GetRoverParameters();
             rover = new Rover(roverParameters, grid);
 
-            EnterMainLoop();
+            var result = EnterMainLoop();
 
-            // TODO: print results to output file
+            OutputResults(outputFile, result);
         }
 
-        private void EnterMainLoop()
+        private void OutputResults(string outputFilename, string result)
         {
+            var t = new List<string>();
+
+            t.Add("Result: " + result);
+            t.Add("");
+            t.Add("Total Moves: " + rover.MoveCount);
+            t.Add("");
+
+            t.Add("Least Possible Moves:");
+            t.Add("                   Rover");
+            t.Add("Algo   | Moves | Efficiency");
+            // Run A* search.
+            var startFacing = rover.ActionHistory.Peek().Facing;
+            var aStarSearch = new AStarSearch(grid, grid.startPosition,
+                startFacing, grid.goalPosition, new Stack<Rover.MoveRecord>());
+            var shortestPath = aStarSearch.GetShortestPath();
+            float efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
+            t.Add(String.Format("A*+    | {0,4}  |  {1,6:0.00}%",
+                shortestPath.Count, efficiency * 100f));
+            t.Add("");
+
+            t.Add("Action Breakdown:");
+            var moveActionCount = rover.MoveBreakdown["Move_Forward"]
+                                + rover.MoveBreakdown["Move_ForwardLeft"]
+                                + rover.MoveBreakdown["Move_ForwardRight"];
+            t.Add("    Move: " + moveActionCount);
+            var len = Utils.digitsIn(moveActionCount);
+            t.Add(String.Format("        Forward      {0," + len +"}/{1}",
+                rover.MoveBreakdown["Move_Forward"], moveActionCount));
+            t.Add(String.Format("        ForwardLeft  {0," + len + "}/{1}",
+                rover.MoveBreakdown["Move_ForwardLeft"], moveActionCount));
+            t.Add(String.Format("        ForwardRight {0," + len + "}/{1}",
+                rover.MoveBreakdown["Move_ForwardRight"], moveActionCount));
+
+            var rotateActionCount = rover.MoveBreakdown["Rotate_Left"]
+                                  + rover.MoveBreakdown["Rotate_Right"];
+            t.Add("    Rotate: " + rotateActionCount);
+            len = Utils.digitsIn(rotateActionCount);
+            t.Add(String.Format("        Left  {0," + len + "}/{1}",
+                rover.MoveBreakdown["Rotate_Left"], rotateActionCount));
+            t.Add(String.Format("        Right {0," + len + "}/{1}",
+                rover.MoveBreakdown["Rotate_Right"], rotateActionCount));
+
+            var revertActionCount = rover.MoveBreakdown["Revert_Move"]
+                                  + rover.MoveBreakdown["Revert_Rotate"];
+            t.Add("    Revert: " + revertActionCount);
+            len = Utils.digitsIn(revertActionCount);
+            t.Add(String.Format("        Move   {0," + len + "}/{1}",
+                rover.MoveBreakdown["Revert_Move"], revertActionCount));
+            t.Add(String.Format("        Rotate {0," + len + "}/{1}",
+                rover.MoveBreakdown["Revert_Rotate"], revertActionCount));
+
+            t.Add("");
+            t.Add("Locations Visited:");
+
+
+            //  12345678901234567890
+            // 1 R...
+            // 2.RR.
+            // 3.R..
+            // 4...G
+            // 5
+            // 6
+            // 7
+            // 8
+            // 9
+            //10
+            t.Add("");
+
+            t.Add("Path Taken:");
+            var lenM = Utils.digitsIn(rover.MoveCount);
+            var lenX = Utils.digitsIn(grid.width);
+            var lenY = Utils.digitsIn(grid.height);
+            t.Add("Move Action    Path    Facing");
+            var moveCount = 0;
+            while (rover.ActionHistory.Count > 0)
+            {
+                var action = rover.ActionHistory.Dequeue();
+                t.Add(String.Format("[{0," + lenM + "}] {1,-6} -> [{2," + lenX + "},{3,"
+                    + lenY + "}] {4}", moveCount, action.Action.ToString(),
+                    action.Position.x, action.Position.y, action.Facing));
+                ++moveCount;
+            }
+            t.Add("-----> " + result);
+
+            System.IO.File.WriteAllLines(outputFilename, t);
+        }
+
+        private string EnterMainLoop()
+        {
+            var result = "Undefined";
             // Simulation Loop
             while (true)
             {
@@ -59,21 +149,25 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 {
                     DisplayProgress();
                     Console.WriteLine("-----> Goal Reached!");
+                    result = "Goal Reached";
                     break;
                 }
                 if (rover.MoveCount >= MoveLimit)
                 {
                     DisplayProgress();
                     Console.WriteLine("-----> Move Limit Reached.");
+                    result = "Move Limit Reached";
                     break;
                 }
                 if (noPathFound)
                 {
                     DisplayProgress();
                     Console.WriteLine("-----> No Path Found!");
+                    result = "No Path Found";
                     break;
                 }
             }
+            return result;
         }
 
         private GridParameters GetGridParameters()
@@ -100,8 +194,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             var gridParams = new GridParameters();
 
-            Console.WriteLine("Height: ");
             Console.WriteLine("Width: ");
+            Console.WriteLine("Height: ");
             Console.WriteLine("Start Position (x y): ");
             Console.WriteLine("Goal  Position (x y): ");
             Console.WriteLine("Obstacle Density (0.0 to 1.0): ");
@@ -109,23 +203,23 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("                Wall - ");
             Console.WriteLine("                Pit  - ");
 
-            Console.SetCursorPosition(8, Console.CursorTop - 8);
-            gridParams.height = Convert.ToInt32(Console.ReadLine());
-
-            Console.SetCursorPosition(7, Console.CursorTop);
+            Console.SetCursorPosition(7, Console.CursorTop - 8);
             gridParams.width = Convert.ToInt32(Console.ReadLine());
+
+            Console.SetCursorPosition(8, Console.CursorTop);
+            gridParams.height = Convert.ToInt32(Console.ReadLine());
 
             Console.SetCursorPosition(22, Console.CursorTop);
             string[] position = Console.ReadLine().Split(null);
             gridParams.startPosition = new Vector2(
                 (float)Convert.ToDouble(position[0]),
-                (float)Convert.ToDouble(position[0]));
+                (float)Convert.ToDouble(position[1]));
 
             Console.SetCursorPosition(22, Console.CursorTop);
             position = Console.ReadLine().Split(null);
             gridParams.goalPosition = new Vector2(
                 (float)Convert.ToDouble(position[0]),
-                (float)Convert.ToDouble(position[0]));
+                (float)Convert.ToDouble(position[1]));
 
             Console.SetCursorPosition(31, Console.CursorTop);
             gridParams.obstacleDensity = 
@@ -168,8 +262,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             string filename = Console.ReadLine();
             string[] map = System.IO.File.ReadAllLines(filename);
             
-
-
             return new GridParameters();
         }
 
@@ -242,7 +334,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 rover.Position.y);
             Console.WriteLine("Facing: {0}", rover.Facing);
             Console.WriteLine("Move: {0}/{1}", rover.MoveCount, MoveLimit);
-//            Console.WriteLine();
         }
     }
 }

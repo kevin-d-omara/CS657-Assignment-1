@@ -6,7 +6,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     public class RoverParameters
     {
         // All fields set to default value.
-        public Bearing facing = Bearing.SouthEast;
+        public Bearing facing = Bearing.South;
         public List<Sequence> allowedMovementSequences = new List<Sequence>
         {
             new Sequence(Direction.Forward, Sequence.Mode.Terminate, Sequence.Type.Movement),

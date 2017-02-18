@@ -5,7 +5,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     public class Driver
     {
-        // ../../Maps/map1.txt ../../Output/output.txt
         public static void Main(string[] args)
         {
             SimulationManager simulationManager = new SimulationManager();

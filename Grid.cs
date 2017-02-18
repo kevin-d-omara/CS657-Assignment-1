@@ -66,6 +66,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             width = lines[0].Length;
             height = lines.Length;
+            // Check for end of file newline.
+            if (lines[lines.Length - 1].Length == 1) { height -= 1; }
             CreateEmptyBoard();
 
             int obstacleCount = 0;

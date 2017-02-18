@@ -56,6 +56,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             t.Add("Total Moves: " + rover.MoveCount);
             t.Add("");
 
+            // Algorithm Comparison --------------------------------------------
             t.Add("Least Possible Moves:");
             t.Add("                   Rover");
             t.Add("Algo   | Moves | Efficiency");
@@ -64,15 +65,17 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             var aStarSearch = new AStarSearch(grid, grid.startPosition,
                 startFacing, grid.goalPosition, new Stack<Rover.MoveRecord>());
             var shortestPath = aStarSearch.GetShortestPath();
-            float efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
+            var efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
             t.Add(String.Format("A*+    | {0,4}  |  {1,6:0.00}%",
                 shortestPath.Count, efficiency * 100f));
             t.Add("");
 
+            // Action Breakdown ------------------------------------------------
             t.Add("Action Breakdown:");
             var moveActionCount = rover.MoveBreakdown["Move_Forward"]
                                 + rover.MoveBreakdown["Move_ForwardLeft"]
                                 + rover.MoveBreakdown["Move_ForwardRight"];
+            // Move
             t.Add("    Move: " + moveActionCount);
             var len = Utils.digitsIn(moveActionCount);
             t.Add(String.Format("        Forward      {0," + len +"}/{1}",
@@ -82,6 +85,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             t.Add(String.Format("        ForwardRight {0," + len + "}/{1}",
                 rover.MoveBreakdown["Move_ForwardRight"], moveActionCount));
 
+            // Rotate
             var rotateActionCount = rover.MoveBreakdown["Rotate_Left"]
                                   + rover.MoveBreakdown["Rotate_Right"];
             t.Add("    Rotate: " + rotateActionCount);
@@ -91,6 +95,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             t.Add(String.Format("        Right {0," + len + "}/{1}",
                 rover.MoveBreakdown["Rotate_Right"], rotateActionCount));
 
+            // Revert
             var revertActionCount = rover.MoveBreakdown["Revert_Move"]
                                   + rover.MoveBreakdown["Revert_Rotate"];
             t.Add("    Revert: " + revertActionCount);
@@ -100,9 +105,93 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             t.Add(String.Format("        Rotate {0," + len + "}/{1}",
                 rover.MoveBreakdown["Revert_Rotate"], revertActionCount));
 
+            // Environment Breakdown--------------------------------------------
+            t.Add("");
+            t.Add("Environment:");
+            //WISE 0855−0714 
+            var randomPlanet = Utils.randomString(Utils.upperChars, 4) + " "
+                + Utils.randomString(Utils.alphaChars, 4) + "-"
+                + Utils.randomString(Utils.alphaChars, 4);
+            var randomSector = Utils.randomString(Utils.upperChars, 3) + " "
+                + Utils.randomString(Utils.alphaChars, 2) + "."
+                + Utils.randomString(Utils.alphaChars, 2) + "."
+                + Utils.randomString(Utils.alphaChars, 3);
+
+            t.Add("    Planet: " + randomPlanet);
+            t.Add("    Sector: " + randomSector);
+            t.Add("    Dimensions:");
+            t.Add("        Width  - " + grid.width + "m");
+            t.Add("        Height - " + grid.height + "m");
+            t.Add("        Area   - " + grid.width * grid.height + "m^2");
+            t.Add("    Obstructions:");
+            t.Add("        Encountered     - ");
+            t.Add("        Approx. Density - ");
+            t.Add(String.Format("        Actual  Density - {0:0.00}%",
+                grid.obstacleDensity * 100f));
+            t.Add(String.Format("                          {0:0.00}/m^2",
+                grid.obstacleDensity * 100f));
+
+            // Environment Map -------------------------------------------------
+            t.Add("");
+            t.Add("Environment Map:");
+            var environmentMap = grid.ToImage();
+            environmentMap[(int)grid.startPosition.x, (int)grid.startPosition.y]
+                = 'R';
+            environmentMap[(int)grid.goalPosition.x, (int)grid.goalPosition.y]
+                = 'G';
+
+            for (int y = 0; y < environmentMap.GetLength(1); ++y)
+            {
+                var line = "";
+                for (int x = 0; x < environmentMap.GetLength(0); ++x)
+                {
+                    line += environmentMap[x, y];
+                }
+                t.Add(line);
+            }
+
+            // Database Map ----------------------------------------------------
+            t.Add("");
+            t.Add("Rover Database Map:");
+            var databaseMap = rover.Grid.ToImage();
+            databaseMap[(int)grid.goalPosition.x, (int)grid.goalPosition.y]
+                = 'G';
+
+            for (int y = 0; y < databaseMap.GetLength(1); ++y)
+            {
+                var line = "";
+                for (int x = 0; x < databaseMap.GetLength(0); ++x)
+                {
+                    line += databaseMap[x, y];
+                }
+                t.Add(line);
+            }
+
+            // Locations Visited Map -------------------------------------------
             t.Add("");
             t.Add("Locations Visited:");
+            for (int y = 1; y < databaseMap.GetLength(1) -1 ; ++y)
+            {
+                for (int x = 1; x < databaseMap.GetLength(0) - 1; ++x)
+                {
+                    databaseMap[x, y] = '.';
+                }
+            }
 
+            foreach (Rover.ActionRecord action in rover.ActionHistory)
+            {
+                databaseMap[(int)action.Position.x, (int)action.Position.y] = 'R';
+            }
+
+            for (int y = 0; y < databaseMap.GetLength(1); ++y)
+            {
+                var line = "";
+                for (int x = 0; x < databaseMap.GetLength(0); ++x)
+                {
+                    line += databaseMap[x, y];
+                }
+                t.Add(line);
+            }
 
             //  12345678901234567890
             // 1 R...
@@ -117,6 +206,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             //10
             t.Add("");
 
+            // Path Taken ------------------------------------------------------
             t.Add("Path Taken:");
             var lenM = Utils.digitsIn(rover.MoveCount);
             var lenX = Utils.digitsIn(grid.width);
@@ -126,9 +216,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             while (rover.ActionHistory.Count > 0)
             {
                 var action = rover.ActionHistory.Dequeue();
-                t.Add(String.Format("[{0," + lenM + "}] {1,-6} -> [{2," + lenX + "},{3,"
-                    + lenY + "}] {4}", moveCount, action.Action.ToString(),
-                    action.Position.x, action.Position.y, action.Facing));
+                t.Add(String.Format("[{0," + lenM + "}] {1,-6} -> [{2," + lenX 
+                    + "},{3," + lenY + "}] {4}", moveCount, 
+                    action.Action.ToString(), action.Position.x,
+                    action.Position.y, action.Facing));
                 ++moveCount;
             }
             t.Add("-----> " + result);

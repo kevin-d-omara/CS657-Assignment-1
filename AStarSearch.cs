@@ -29,7 +29,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly Vector2 start;
         public readonly Vector2 goal;
         public readonly Bearing startFacing;
-        public readonly Stack<Rover.ActionRecord> previousMoves;
+        public readonly Stack<Rover.MoveRecord> previousMoves;
 
         private Dictionary<Cell, Node> nodes = new Dictionary<Cell, Node>();
         private class Move
@@ -56,15 +56,15 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         };
 
         public AStarSearch(Grid grid, Vector2 start, Bearing startFacing,
-            Vector2 goal, Stack<Rover.ActionRecord> previousMoves)
+            Vector2 goal, Stack<Rover.MoveRecord> previousMoves)
         {
             this.grid = grid;
             this.start = start;
             this.goal = goal;
             this.startFacing = startFacing;
             // Twice nested "new Stack<>()" to get correct ordering.
-            this.previousMoves = new Stack<Rover.ActionRecord>(
-                new Stack<Rover.ActionRecord>(previousMoves));
+            this.previousMoves = new Stack<Rover.MoveRecord>(
+                new Stack<Rover.MoveRecord>(previousMoves));
 
             Search();
         }

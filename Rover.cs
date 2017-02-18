@@ -22,15 +22,32 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public Bearing Facing { get; private set; }
 
         public int MoveCount { get; private set; } = 0;
-        public Stack<ActionRecord> PreviousMoves { get; private set; }
-            = new Stack<ActionRecord>();
+        public Dictionary<string, int> MoveBreakdown { get; private set; }
+        public Stack<MoveRecord> PreviousMoves { get; private set; }
+            = new Stack<MoveRecord>();
+        public Queue<ActionRecord> ActionHistory { get; private set; }
+            = new Queue<ActionRecord>();
 
-        public class ActionRecord
+        public class MoveRecord
         {
             public Vector2 Position { get; private set; }
             public Bearing Facing { get; private set; }
-            public ActionRecord(Vector2 position, Bearing facing)
+            public MoveRecord(Vector2 position, Bearing facing)
             {
+                Position = position;
+                Facing = facing;
+            }
+        }
+
+        public class ActionRecord
+        {
+            public Action.Type Action { get; private set; }
+            public Vector2 Position { get; private set; }
+            public Bearing Facing { get; private set; }
+            public ActionRecord(Action.Type action, Vector2 position,
+                Bearing facing)
+            {
+                Action = action;
                 Position = position;
                 Facing = facing;
             }
@@ -70,6 +87,19 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 allowedSonarSequences.Add(sequence);
             }
+
+            MoveBreakdown = new Dictionary<string, int>();
+            MoveBreakdown.Add("Move_Forward", 0);
+            MoveBreakdown.Add("Move_ForwardLeft", 0);
+            MoveBreakdown.Add("Move_ForwardRight", 0);
+            MoveBreakdown.Add("Rotate_Left", 0);
+            MoveBreakdown.Add("Rotate_Right", 0);
+            MoveBreakdown.Add("Revert_Move", 0);
+            MoveBreakdown.Add("Revert_Rotate", 0);
+
+            // Record starting location.
+            ActionHistory.Enqueue(new ActionRecord(Action.Type.Start, Position,
+                Facing));
         }
 
         public void Update()
@@ -203,8 +233,22 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private void Move(Direction direction)
         {
             // Record Action.
-            PreviousMoves.Push(new ActionRecord(Position, Facing));
+            PreviousMoves.Push(new MoveRecord(Position, Facing));
             ++MoveCount;
+            switch(direction)
+            {
+                case Direction.Forward:
+                    ++MoveBreakdown["Move_Forward"];
+                    break;
+                case Direction.ForwardLeft:
+                    ++MoveBreakdown["Move_ForwardLeft"];
+                    break;
+                case Direction.ForwardRight:
+                    ++MoveBreakdown["Move_ForwardRight"];
+                    break;
+                default:
+                    break;
+            }
 
             Bearing moveBearing = Facing.ToBearing(direction);
             Vector2 offset = moveBearing.ToCoordinateOffset();
@@ -218,6 +262,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     Position.y + offset.y);
                 Facing = moveBearing;
             }
+
+            ActionHistory.Enqueue(new ActionRecord(Action.Type.Move, Position,
+                Facing));
         }
 
         /// <summary>
@@ -228,7 +275,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private void Rotate45(Direction direction)
         {
             // Record Action.
-            PreviousMoves.Push(new ActionRecord(Position, Facing));
+            PreviousMoves.Push(new MoveRecord(Position, Facing));
             ++MoveCount;
 
             // Exit early if unallowed direction.
@@ -246,9 +293,23 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 direction = Direction.ForwardRight;
             }
+            switch (direction)
+            {
+                case Direction.ForwardLeft:
+                    ++MoveBreakdown["Rotate_Left"];
+                    break;
+                case Direction.ForwardRight:
+                    ++MoveBreakdown["Rotate_Right"];
+                    break;
+                default:
+                    break;
+            }
 
             //Uupdate Facing.
             Facing = Facing.ToBearing(direction);
+
+            ActionHistory.Enqueue(new ActionRecord(Action.Type.Rotate, Position,
+                Facing));
         }
 
         /// <summary>
@@ -257,14 +318,28 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// </summary>
         private void RevertToLastAction()
         {
+            // Record Action
             ++MoveCount;
 
             if (PreviousMoves.Count > 0)
             {
-                ActionRecord lastMove = PreviousMoves.Pop();
+                MoveRecord lastMove = PreviousMoves.Pop();
+
+                if (lastMove.Position == Position)
+                {
+                    ++MoveBreakdown["Revert_Rotate"];
+                }
+                else
+                {
+                    ++MoveBreakdown["Revert_Move"];
+                }
+
                 Position = lastMove.Position;
                 Facing = lastMove.Facing;
             }
+
+            ActionHistory.Enqueue(new ActionRecord(Action.Type.Revert, Position,
+                Facing));
         }
     }
 }

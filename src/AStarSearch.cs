@@ -11,8 +11,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     /// A* Search modified to include restrictions on the Rover's allowed
     /// movement and rotations.
     /// </summary>
-    // Each step of modified A* will mark the adjacent & diagonal open cells
-    // ('.') with 3 pieces of data:
+    // Each step of modified A* marks the adjacent & diagonal open cells ('.')
+    // with 3 pieces of data:
     // Cost   - cost to reach this cell
     // Facing - facing after moving into this cell
     // From   - position of cell prior to this
@@ -22,6 +22,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     // 1|...       343       NW, N, NE       [2,2][2,2][2,2]
     // 2|.R.  ==>  2R2  and   W,  ,  E  and  [2,2]     [2,2]
     // 3|...       111       SW, S, SE       [2,2][2,2][2,2]
+    //
+    // The Shortest Path is then found my backtracking from the Goal to the
+    // Start by taking the lowest cost Paths.
 
     public class AStarSearch
     {

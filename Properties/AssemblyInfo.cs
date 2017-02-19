@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rover Expert AI")]
-[assembly: AssemblyDescription("Watch an expert AI guide a Rover back to base across an exo planet's surface.")]
+[assembly: AssemblyDescription("Watch a rover guide itself across an unknown exo-planet.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("KevinDOMara.SDSU.CS657.Assignment1")]

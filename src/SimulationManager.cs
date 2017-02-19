@@ -20,10 +20,10 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         public SimulationManager()
         {
+            flags.Add("automatic", false);
             flags.Add("display", false);
             flags.Add("final", false);
             flags.Add("no-map", false);
-            flags.Add("step", false);
             flags.Add("unlimited", false);
 
             Rover.OnUsedSonar += DisplayProgress;
@@ -252,6 +252,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 ++moveCount;
             }
             t.Add("-----> " + result);
+            t.Add("");
 
             Console.WriteLine(Environment.NewLine + "Results output to: " + outputFilename);
             System.IO.File.WriteAllLines(outputFilename, t);

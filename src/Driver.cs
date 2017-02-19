@@ -21,6 +21,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             {
                 switch (arg)
                 {
+                    case "-a":
+                    case "--automatic":
+                        args.Remove(arg);
+                        SimulationManager.flags["automatic"] = true;
+                        break;
                     case "-d":
                     case "--display":
                         args.Remove(arg);
@@ -42,11 +47,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     case "--no-map":
                         args.Remove(arg);
                         SimulationManager.flags["no-map"] = true;
-                        break;
-                    case "-s":
-                    case "--step":
-                        args.Remove(arg);
-                        SimulationManager.flags["step"] = true;
                         break;
                     case "-u":
                     case "--unlimited":

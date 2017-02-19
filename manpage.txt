@@ -58,22 +58,23 @@ DESCRIPTION
 OPTIONS
     The following options are supported:
     
-    -d, --display   prints each step of progress to the command line
-    
-    -f, --final     prints the contents of the output file to the screen at the
-                    end of the simluation
-                       
-    -h, --help      display this menu
+	-a, --automatic		simulation continues without waiting for keypress
+						note: this option has no effect if not used with -d
 
-    -m, --man       display this menu
+    -d, --display		prints each step of progress to the command line
+						press any key to advance after each simulation step
     
-    -n, --no-map    supress command line output of the map (note: only works
-                    when used alongside -d or --display
+    -f, --final			prints the contents of the output file to the screen at 
+						the end of the simluation
                        
-    -s, --step      press <enter> to advance after each step of the Rover's
-                    movement
+    -h, --help			display this menu
+
+    -m, --man			display this menu
+    
+    -n, --no-map		supress command line output of the map (note: only works
+						when used alongside -d or --display
                        
-    -u, --unlimited allows for unlimited move limit
+    -u, --unlimited		allows for unlimited move limit
 
 EXAMPLES
     Assignment1 mymap1.txt
@@ -91,23 +92,26 @@ EXAMPLES
     Assignment1 -h
         Displays this information.
         
-    Assignment1 -d -s
-        After the user creates an environment, the simulation is displayed to
-        the terminal at each step (-d). After each step, the simulation pauses
-        until the user presses ANY key (-s).
+    Assignment1 -d
+        The simulation is displayed to the terminal at each step. After each
+		step, the simulation pauses until the user presses ANY key.
+
+    Assignment1 -d -a
+		The simulation is displayed to the terminal at each step. The simulation
+		continues without waiting for user input.
         
     Assignment1 -f
         After the simulation is complete, the results are written to the screen.
         Note: these are the same contents as what is printed to 'results.txt'.
         
     Assignment1 -d -n
-        Each step of the simulation is displayed to the screen (-d), but the map
-        is no shown (-n). Instead, just the Rover's position, facing, and action
-        are presented.
+		The simulation is displayed to the terminal at each step, but the map is
+        not shown. Instead, just the Rover's position, facing, and action are
+        presented.
         
     Assignment1 -u
-        The simulation is run with an unlimited number of moves for the Rover.
-        Note: unlimited = 999999.
+        The simulation is run with an unlimited (999,999) number of moves for
+		the Rover.
         
 BUGS
     The A*+ heuristics of Manhattan Distance and Chebyshev Distance are known to

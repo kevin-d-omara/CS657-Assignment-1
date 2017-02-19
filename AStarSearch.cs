@@ -75,14 +75,16 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         private void Search()
         {
+            var goalCell = grid.Position[(int)goal.x, (int)goal.y];
             var startNode = new Node(start);
-            var startPath = new Path(startNode, 0, startFacing);
-            startNode.Append(startPath);
             var startCell = grid.Position[(int)start.x, (int)start.y];
             nodes.Add(startCell, startNode);
+            var startCost = heuristic(startCell, goalCell);
+            var startPath = new Path(startNode, startCost, startFacing);
+            startNode.Append(startPath);
             // Frontier is the open set of nodes to be explored.
             var frontier = new SimplePriorityQueue<Node, int>();
-            frontier.Enqueue(startNode, 0);
+            frontier.Enqueue(startNode, startCost);
 
             // Create and Enqueue all Nodes the Rover has been to prior.
             // This allows the Rover to benefit from the Revert action.
@@ -103,11 +105,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     else
                     {
                         priorNode = new Node(priorMove.Position);
-                        priorNode.Append(new Path(currentNode, revertCount,
+                        var priorCost = revertCount
+                            + heuristic(priorCell, goalCell);
+                        priorNode.Append(new Path(currentNode, priorCost,
                             priorMove.Facing));
                         priorNode.Paths[0].wasRevertAction = true;
                         nodes.Add(priorCell, priorNode);
-                        frontier.Enqueue(priorNode, revertCount);
+                        frontier.Enqueue(priorNode, priorCost);
                     }
 
                     currentNode = priorNode;
@@ -130,8 +134,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     else
                     {
                         rearNode = new Node(rearPos);
-                        rearNode.Append((new Path(startNode, 4, rearFacing)));
-                        frontier.Enqueue(rearNode, 4);
+                        var rearCost = 4 + heuristic(rearCell, goalCell);
+                        rearNode.Append((new Path(startNode, rearCost, rearFacing)));
+                        frontier.Enqueue(rearNode, rearCost);
                     }
                 }
             }
@@ -151,12 +156,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 {
                     foreach (Move move in adjacentCells)
                     {
-                        var newCost = path.cost + move.cost;
                         var newFacing = path.facing.ToBearing(move.direction);
                         var offset = newFacing.ToCoordinateOffset();
 
                         var nextCell = grid.Position[(int)(currentNode.pos.x
                             + offset.x), (int)(currentNode.pos.y + offset.y)];
+                        var newCost = path.cost + move.cost
+                            + heuristic(nextCell, goalCell);
 
                         if (nextCell.blocksMove) { continue; }
 

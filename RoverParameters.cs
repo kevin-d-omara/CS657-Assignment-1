@@ -7,7 +7,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     {
         // All fields set to default value.
         public Bearing facing = Bearing.SouthEast;
-        public AStarSearch.DistanceHeuristic aStarHeurstic = Utils.ChebyshevDistance;
+        public AStarSearch.DistanceHeuristic aStarHeurstic = Utils.ZeroDistance;
         public List<Sequence> allowedMovementSequences = new List<Sequence>
         {
             new Sequence(Direction.Forward, Sequence.Mode.Terminate, Sequence.Type.Movement),

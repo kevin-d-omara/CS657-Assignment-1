@@ -8,6 +8,7 @@
 *.sln.docstates
 Maps/*
 Output/*
+results.*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

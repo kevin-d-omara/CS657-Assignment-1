@@ -21,6 +21,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public SimulationManager()
         {
             flags.Add("display", false);
+            flags.Add("final", false);
             flags.Add("no-map", false);
             flags.Add("step", false);
             flags.Add("unlimited", false);
@@ -56,7 +57,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             rover = new Rover(roverParameters, grid);
 
             var result = EnterMainLoop();
-            Console.WriteLine("\nResults output to: " + outputFile);
 
             OutputResults(outputFile, result);
         }
@@ -253,7 +253,16 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             }
             t.Add("-----> " + result);
 
+            Console.WriteLine("\nResults output to: " + outputFilename);
             System.IO.File.WriteAllLines(outputFilename, t);
+
+            if (flags["final"])
+            {
+                foreach(string line in t)
+                {
+                    Console.WriteLine(line);
+                }
+            }
         }
 
         private string EnterMainLoop()

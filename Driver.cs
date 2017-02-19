@@ -9,6 +9,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         // TODO: include switches:
         // -d, --display   -> prints each step of progress to the CL
+        // -f, --final     -> prints the contents of the output file to the
+        //                    screen at the end of the simulation.
         // -h, --help      -> display CL paramter options
         // -n, --no-map    -> suppress Cl output of map
         // -s, --step      -> press <enter> to step through the pathfinding
@@ -27,6 +29,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     case "--display":
                         args.Remove(arg);
                         SimulationManager.flags["display"] = true;
+                        break;
+                    case "-f":
+                    case "--final":
+                        args.Remove(arg);
+                        SimulationManager.flags["final"] = true;
                         break;
                     case "-h":
                     case "--help":
@@ -106,6 +113,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("");
             Console.WriteLine("    Switches:");
             Console.WriteLine("        -d, --display   -> prints each step of progress to the command line");
+            Console.WriteLine("        -f, --final     -> prints the contents of the output file to the screen at the end of the simluation");
             Console.WriteLine("        -h, --help      -> display this menu");
             Console.WriteLine("        -n, --no-map    -> supress command line output of the map (note: only works when used alongside -d or --display");
             Console.WriteLine("        -s, --setp      -> press <enter> to advance after each step of the Rover's movement");

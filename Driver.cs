@@ -5,7 +5,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     public class Driver
     {
-        // ../../Maps/test_revert_2.map ../../Output/results.txt
+        // Maps/test_revert_2.map Output/results.txt 
 
         // TODO: include switches:
         // -d, --display   -> prints each step of progress to the CL

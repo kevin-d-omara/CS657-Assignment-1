@@ -25,6 +25,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
     public class AStarSearch
     {
+        public delegate int DistanceHeuristic(Cell a, Cell b);
+        public readonly DistanceHeuristic heuristic;
         public readonly Grid grid;
         public readonly Vector2 start;
         public readonly Vector2 goal;
@@ -56,7 +58,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         };
 
         public AStarSearch(Grid grid, Vector2 start, Bearing startFacing,
-            Vector2 goal, Stack<Rover.MoveRecord> previousMoves)
+            Vector2 goal, Stack<Rover.MoveRecord> previousMoves,
+            DistanceHeuristic heuristic)
         {
             this.grid = grid;
             this.start = start;
@@ -65,6 +68,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             // Twice nested "new Stack<>()" to get correct ordering.
             this.previousMoves = new Stack<Rover.MoveRecord>(
                 new Stack<Rover.MoveRecord>(previousMoves));
+            this.heuristic = heuristic;
 
             Search();
         }

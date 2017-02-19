@@ -37,6 +37,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public readonly Grid environment;
 
         // Intelligent Control
+        public AStarSearch.DistanceHeuristic aStarHeuristic;
         public readonly List<Sequence> allowedMovementSequences;
         public readonly List<Sequence> allowedSonarSequences;
 
@@ -69,6 +70,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public Rover(RoverParameters roverParams, Grid environment)
         {
             this.environment = environment;
+            this.aStarHeuristic = roverParams.aStarHeurstic;
 
             var emptyGridParameters = new GridParameters(
                 environment.width, environment.height,
@@ -157,7 +159,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             // Run A* search.
             var aStarSearch = new AStarSearch(Grid, Position, Facing,
-                Grid.goalPosition, PreviousMoves);
+                Grid.goalPosition, PreviousMoves, aStarHeuristic);
             var shortestPath = aStarSearch.GetShortestPath();
 
             // Exit early if no path exists to the Goal.

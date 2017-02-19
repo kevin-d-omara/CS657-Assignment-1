@@ -72,16 +72,24 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             // Algorithm Comparison --------------------------------------------
             t.Add("Least Possible Moves:");
-            t.Add("                   Rover");
-            t.Add("Algo   | Moves | Efficiency");
-            // Run A* search.
-            var startFacing = rover.ActionHistory.Peek().Facing;
-            var aStarSearch = new AStarSearch(grid, grid.startPosition,
-                startFacing, grid.goalPosition, new Stack<Rover.MoveRecord>());
-            var shortestPath = aStarSearch.GetShortestPath();
-            var efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
-            t.Add(String.Format("A*+    | {0,4}  |  {1,6:0.00}%",
-                shortestPath.Count, efficiency * 100f));
+            t.Add("                               Rover");
+            t.Add("Algo   | Heuristic | Moves | Efficiency");
+
+            var heuristics = new Dictionary<string, AStarSearch.DistanceHeuristic>();
+            heuristics.Add("Chebyshev", Utils.ChebyshevDistance);
+            heuristics.Add("Manhattan", Utils.ManhattanDistance);
+            heuristics.Add("None", Utils.ZeroDistance);
+
+            // Run A*+ Search for each Heuristic.
+            foreach (KeyValuePair<string, AStarSearch.DistanceHeuristic> heuristic in heuristics)
+            {
+                var startFacing = rover.ActionHistory.Peek().Facing;
+                var aStarSearch = new AStarSearch(grid, grid.startPosition,
+                    startFacing, grid.goalPosition, new Stack<Rover.MoveRecord>(), heuristic.Value);
+                var shortestPath = aStarSearch.GetShortestPath();
+                var efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
+                t.Add(String.Format("A*+    | {0,9} | {1,4}  |  {2,6:0.00}%", heuristic.Key, shortestPath.Count, efficiency * 100f));
+            }
             t.Add("______________________________________________________________");
 
             // Action Breakdown ------------------------------------------------

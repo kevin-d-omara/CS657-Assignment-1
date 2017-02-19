@@ -7,6 +7,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     {
         // All fields set to default value.
         public Bearing facing = Bearing.SouthEast;
+        public AStarSearch.DistanceHeuristic aStarHeurstic = Utils.ChebyshevDistance;
         public List<Sequence> allowedMovementSequences = new List<Sequence>
         {
             new Sequence(Direction.Forward, Sequence.Mode.Terminate, Sequence.Type.Movement),
@@ -30,10 +31,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         /// Parameterized constructor.
         /// </summary>
         public RoverParameters(
-            Bearing initialFacing,
+            Bearing initialFacing, AStarSearch.DistanceHeuristic aStarHeurstic,
             List<Sequence> allowedMovement, List<Sequence> allowedSonar)
         {
             facing = initialFacing;
+            this.aStarHeurstic = aStarHeurstic;
 
             // Deep copy lists.
             allowedMovementSequences = new List<Sequence>();

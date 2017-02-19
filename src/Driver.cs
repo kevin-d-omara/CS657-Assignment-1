@@ -94,7 +94,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         private static void DisplayHelp()
         {
             Console.WriteLine("NAME");
-            Console.WriteLine("    Assignment1 - Watch expert AI guide a Rover back to base across the Martian surface.");
+            Console.WriteLine("    Assignment1 - Watch a rover guide itself across an unknown exo-planet.");
             Console.WriteLine("");
             Console.WriteLine("SYNOPSIS");
             Console.WriteLine("    Assignment1 [Environment-Filename] [Output-Filename] [OPTIONS]...");
@@ -112,6 +112,24 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("        -n, --no-map    -> supress command line output of the map (note: only works when used alongside -d or --display");
             Console.WriteLine("        -s, --setp      -> press <enter> to advance after each step of the Rover's movement");
             Console.WriteLine("        -u, --unlimited -> allows for unlimited move limit");
+            Console.WriteLine("");
+            Console.WriteLine("    Map File Format:");
+            Console.WriteLine("        The map file may have any name (i.e. MyMap.txt, MyMap.dat, MyMap, etc.).");
+            Console.WriteLine("        The contents must be a rectangular array of letters and/or numbers.");
+            Console.WriteLine("        Specify elements of the map with the following glyphs:");
+            Console.WriteLine("            Floor -> '.' or '1'");
+            Console.WriteLine("            Wall  -> 'X' or '0'");
+            Console.WriteLine("            Pit   -> 'O' or '2' or '-'");
+            Console.WriteLine("            Start -> 'R' or '8'");
+            Console.WriteLine("            Goal - > 'G' or '9'");
+            Console.WriteLine("        Both the start position ('R'/'8') and the goal position ('G'/'9') may be omitted.");
+            Console.WriteLine("        In this case, the start position will be [6,6] and the goal position will be [width, height].");
+            Console.WriteLine("");
+            Console.WriteLine("    Example Map File:");
+            Console.WriteLine("        R.X..O      810112      R.X..O");
+            Console.WriteLine("        ...X.X  or  111010  or  11.0.X");
+            Console.WriteLine("        XO.X..      021011      X2.X..");
+            Console.WriteLine("        .X...G      101119      .01..9");
             Console.WriteLine("");
         }
     }

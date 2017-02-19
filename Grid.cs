@@ -87,7 +87,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                         obstacleTypesFound[Cell.Type.Wall] = true;
                     }
                     // Pit
-                    else if (cell == '2' || cell == '_')
+                    else if (cell == '2' || cell == '_' || cell == 'O')
                     {
                         ++obstacleCount;
                         Position[x, y] = new Cell(Cell.Type.Pit, x, y);

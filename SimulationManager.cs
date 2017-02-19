@@ -253,7 +253,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             }
             t.Add("-----> " + result);
 
-            Console.WriteLine("\nResults output to: " + outputFilename);
+            Console.WriteLine(Environment.NewLine + "Results output to: " + outputFilename);
             System.IO.File.WriteAllLines(outputFilename, t);
 
             if (flags["final"])

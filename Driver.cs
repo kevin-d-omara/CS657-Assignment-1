@@ -5,16 +5,12 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 {
     public class Driver
     {
-        // Maps/test_revert_2.map Output/results.txt 
-
-        // TODO: include switches:
-        // -d, --display   -> prints each step of progress to the CL
-        // -f, --final     -> prints the contents of the output file to the
-        //                    screen at the end of the simulation.
-        // -h, --help      -> display CL paramter options
-        // -n, --no-map    -> suppress Cl output of map
-        // -s, --step      -> press <enter> to step through the pathfinding
-        // -u, --unlimited -> allows for unlimited move limit
+        
+        /// <summary>
+        /// For help, run this program with the -h or --help flag. Or see the
+        /// function DisplayHelp() below.
+        /// </summary>
+        /// <param name="allArgs"></param>
         public static void Main(string[] allArgs)
         {
             SimulationManager simulationManager = new SimulationManager();
@@ -93,8 +89,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             }
 
             simulationManager.StartSimulation(envFile, outFile);
-            
-            Console.ReadKey();  // stop terminal from closing
         }
 
         private static void DisplayHelp()
@@ -119,7 +113,6 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("        -s, --setp      -> press <enter> to advance after each step of the Rover's movement");
             Console.WriteLine("        -u, --unlimited -> allows for unlimited move limit");
             Console.WriteLine("");
-            Console.ReadKey();  // stop terminal from closing
         }
     }
 }

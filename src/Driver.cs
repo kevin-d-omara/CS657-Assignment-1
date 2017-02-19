@@ -33,6 +33,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                         break;
                     case "-h":
                     case "--help":
+                    case "-m":
+                    case "--man":
                         args.Remove(arg);
                         Driver.DisplayHelp();
                         return;
@@ -93,44 +95,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
         private static void DisplayHelp()
         {
-            Console.WriteLine("NAME");
-            Console.WriteLine("    Assignment1 - Watch a rover guide itself across an unknown exo-planet.");
-            Console.WriteLine("");
-            Console.WriteLine("SYNOPSIS");
-            Console.WriteLine("    Assignment1 [Environment-Filename] [Output-Filename] [OPTIONS]...");
-            Console.WriteLine("");
-            Console.WriteLine("DESCRIPTION");
-            Console.WriteLine("    If no environment filename is specified, a menu will be offered.");
-            Console.WriteLine("    The menu includes environment creation through default and custom options.");
-            Console.WriteLine("");
-            Console.WriteLine("    If no output filename is specified, a file with the name 'results.txt' will be created in the current directory.");
-            Console.WriteLine("");
-            Console.WriteLine("    Switches:");
-            Console.WriteLine("        -d, --display   -> prints each step of progress to the command line");
-            Console.WriteLine("        -f, --final     -> prints the contents of the output file to the screen at the end of the simluation");
-            Console.WriteLine("        -h, --help      -> display this menu");
-            Console.WriteLine("        -n, --no-map    -> supress command line output of the map (note: only works when used alongside -d or --display");
-            Console.WriteLine("        -s, --setp      -> press <enter> to advance after each step of the Rover's movement");
-            Console.WriteLine("        -u, --unlimited -> allows for unlimited move limit");
-            Console.WriteLine("");
-            Console.WriteLine("    Map File Format:");
-            Console.WriteLine("        The map file may have any name (i.e. MyMap.txt, MyMap.dat, MyMap, etc.).");
-            Console.WriteLine("        The contents must be a rectangular array of letters and/or numbers.");
-            Console.WriteLine("        Specify elements of the map with the following glyphs:");
-            Console.WriteLine("            Floor -> '.' or '1'");
-            Console.WriteLine("            Wall  -> 'X' or '0'");
-            Console.WriteLine("            Pit   -> 'O' or '2' or '-'");
-            Console.WriteLine("            Start -> 'R' or '8'");
-            Console.WriteLine("            Goal - > 'G' or '9'");
-            Console.WriteLine("        Both the start position ('R'/'8') and the goal position ('G'/'9') may be omitted.");
-            Console.WriteLine("        In this case, the start position will be [6,6] and the goal position will be [width, height].");
-            Console.WriteLine("");
-            Console.WriteLine("    Example Map File:");
-            Console.WriteLine("        R.X..O      810112      R.X..O");
-            Console.WriteLine("        ...X.X  or  111010  or  11.0.X");
-            Console.WriteLine("        XO.X..      021011      X2.X..");
-            Console.WriteLine("        .X...G      101119      .01..9");
-            Console.WriteLine("");
+            var manPage = System.IO.File.ReadAllLines("manpage.txt");
+            foreach (string line in manPage)
+            {
+                Console.WriteLine(line);
+            }
         }
     }
 }

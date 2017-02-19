@@ -1,0 +1,125 @@
+NAME
+    Assignment1 - Watch a rover guide itself across an unknown exo-planet.
+
+SYNOPSIS
+    Assignment1 [environment-filename] [output-filename] [OPTIONS]...
+
+DESCRIPTION
+    Reads an environment map from 'environment-filename'.
+    
+    Environment File Format:
+    The map file may have any name (i.e. MyMap.txt, MyMap.dat, MyMap, etc.).
+    
+    The contents must be a rectangular array of letters and/or numbers.
+    
+    Specify elements of the map with the following glyphs:
+        Floor -> '.' or '1'
+        Wall  -> 'X' or '0'
+        Pit   -> 'O' or '2' or '-'
+        Start -> 'R' or '8'
+        Goal - > 'G' or '9'
+        
+    Both the start position ('R'/'8') and the goal position ('G'/'9') may be
+    omitted. In this case, the start position will be [6,6] and the goal
+    position will be [width, height].
+
+    Example Map File:
+    R.X..O      810112      R.X..O
+    ...X.X  or  111010  or  11.0.X
+    XO.X..      021011      X2.X..
+    .X...G      101119      .01..9
+    
+    If no filename is specified, an environment is created through user input.
+    The user is offered two options: default and manual.
+    
+    Default:
+        width  = 30
+        height = 30
+        start  = [6,6]
+        goal   = [30,30]
+        obstacle density = 50%
+        obstacle types   = wall
+        
+    Manual:
+        width  = ?
+        height = ?
+        start  = [?,?]
+        goal   = [?,?]
+        obstacle density = ?
+        obstacle types = [wall, pit]
+    
+    Computes the path a Rover takes from some starting position to a goal
+    position.
+    
+    Results are written to the filename specified ('output-filename'). If no
+    filename is specified, results are written to 'results.txt' in the current
+    directory.
+
+OPTIONS
+    The following options are supported:
+    
+    -d, --display   prints each step of progress to the command line
+    
+    -f, --final     prints the contents of the output file to the screen at the
+                    end of the simluation
+                       
+    -h, --help      display this menu
+
+    -m, --man       display this menu
+    
+    -n, --no-map    supress command line output of the map (note: only works
+                    when used alongside -d or --display
+                       
+    -s, --step      press <enter> to advance after each step of the Rover's
+                    movement
+                       
+    -u, --unlimited allows for unlimited move limit
+
+EXAMPLES
+    Assignment1 mymap1.txt
+        Reads 'mymap1.txt' to create the environment, then outputs the
+        simulation results to 'results.txt' in the working directory.
+        
+    Assignment1 mymap.map simulation_results.dat
+        Reads 'mymap.map' to create the environment, then outputs the
+        simulation results to 'simulation_results.dat' in the working directory.
+        
+    Assignment1
+        User chooses between Default and Manual for environment creation.
+        Results are output to 'results.txt' as default.
+        
+    Assignment1 -h
+        Displays this information.
+        
+    Assignment1 -d -s
+        After the user creates an environment, the simulation is displayed to
+        the terminal at each step (-d). After each step, the simulation pauses
+        until the user presses ANY key (-s).
+        
+    Assignment1 -f
+        After the simulation is complete, the results are written to the screen.
+        Note: these are the same contents as what is printed to 'results.txt'.
+        
+    Assignment1 -d -n
+        Each step of the simulation is displayed to the screen (-d), but the map
+        is no shown (-n). Instead, just the Rover's position, facing, and action
+        are presented.
+        
+    Assignment1 -u
+        The simulation is run with an unlimited number of moves for the Rover.
+        Note: unlimited = 999999.
+        
+BUGS
+    The A*+ heuristics of Manhattan Distance and Chebyshev Distance are known to
+    occasionally get "stuck". In this case, the rover toggles repeatedly
+    between two actions until the move limit is reached. For this reason, these
+    heuristics have been disabled.
+    
+    Please report bugs to: https://github.com/kevin-d-omara/CS657-Assignment-1.
+    Open an Issue to document the bug and solicit a quick fix.
+    
+AUTHOR
+    Written by Kevin David O'Mara.
+    
+COPYRIGHT
+    You have no right to copy this work. ;)

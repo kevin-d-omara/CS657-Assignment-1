@@ -62,6 +62,9 @@ OPTIONS
 	-a, --automatic		simulation continues without waiting for keypress
 						note: this option has no effect if not used with -d
 
+	-c, --concise		output only GoalReached/NoPathFound/MoveLimitReached,
+						total moves, observed density, actual density
+
     -d, --display		prints each step of progress to the command line
 						press any key to advance after each simulation step
     

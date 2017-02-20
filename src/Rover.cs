@@ -353,5 +353,30 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             ActionHistory.Enqueue(new ActionRecord(Action.Type.Revert, Position,
                 Facing));
         }
+
+        public void CategorizeCellsDetected(out int totalCellsDetected,
+            out int totalObstaclesDetected)
+        {
+            // Categorize Cells detected.
+            totalObstaclesDetected = 0;
+            var detectNonObstacleCount = 0;
+            foreach (Cell cell in DetectedCells)
+            {
+                // Discount buffer Cells.
+                if (cell.x > 0 && cell.x < Grid.width &&
+                    cell.y > 0 && cell.y < Grid.height)
+                {
+                    if (cell.type == Cell.Type.Floor)
+                    {
+                        ++detectNonObstacleCount;
+                    }
+                    else
+                    {
+                        ++totalObstaclesDetected;
+                    }
+                }
+            }
+            totalCellsDetected = totalObstaclesDetected + detectNonObstacleCount;
+        }
     }
 }

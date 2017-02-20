@@ -21,6 +21,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         public SimulationManager()
         {
             flags.Add("automatic", false);
+            flags.Add("concise", false);
             flags.Add("display", false);
             flags.Add("final", false);
             flags.Add("no-map", false);
@@ -65,194 +66,193 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
         {
             var t = new List<string>();
 
-            t.Add("Result: " + result);
-            t.Add("");
-            t.Add("Total Moves: " + rover.MoveCount);
-            t.Add("");
-
-            // Algorithm Comparison --------------------------------------------
-            t.Add("Least Possible Moves:");
-            t.Add("                               Rover");
-            t.Add("Algo   | Heuristic | Moves | Efficiency");
-
-            var heuristics = new Dictionary<string, AStarSearch.DistanceHeuristic>();
-            heuristics.Add("Chebyshev", Utils.ChebyshevDistance);
-            heuristics.Add("Manhattan", Utils.ManhattanDistance);
-            heuristics.Add("None", Utils.ZeroDistance);
-
-            // Run A*+ Search for each Heuristic.
-            foreach (KeyValuePair<string, AStarSearch.DistanceHeuristic> heuristic in heuristics)
+            if (flags["concise"])
             {
-                var startFacing = rover.ActionHistory.Peek().Facing;
-                var aStarSearch = new AStarSearch(grid, grid.startPosition,
-                    startFacing, grid.goalPosition, new Stack<Rover.MoveRecord>(), heuristic.Value);
-                var shortestPath = aStarSearch.GetShortestPath();
-                var efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
-                t.Add(String.Format("A*+    | {0,9} | {1,4}  |  {2,6:0.00}%", heuristic.Key, shortestPath.Count, efficiency * 100f));
+                t.Add(result);
+                t.Add(rover.MoveCount.ToString());
+
+                // Categorize Cells detected.
+                int totalCellsDetected;
+                int totalObstaclesDetected;
+                rover.CategorizeCellsDetected(out totalCellsDetected, out totalObstaclesDetected);
+                var detectedObstacleDensity = (float)totalObstaclesDetected / (float)totalCellsDetected;
+                t.Add(String.Format("{0:0.00}", detectedObstacleDensity * 100));
+                t.Add(String.Format("{0:0.00}", grid.obstacleDensity    * 100));
             }
-            t.Add("______________________________________________________________");
-
-            // Action Breakdown ------------------------------------------------
-            t.Add("Action Breakdown:");
-            var moveActionCount = rover.MoveBreakdown["Move_Forward"]
-                                + rover.MoveBreakdown["Move_ForwardLeft"]
-                                + rover.MoveBreakdown["Move_ForwardRight"];
-            // Move
-            t.Add("    Move: " + moveActionCount);
-            var len = Utils.digitsIn(moveActionCount);
-            t.Add(String.Format("        Forward      {0," + len +"}/{1} ({2:0.00}%)",  rover.MoveBreakdown["Move_Forward"],      moveActionCount, (float)rover.MoveBreakdown["Move_Forward"]      / moveActionCount * 100f));
-            t.Add(String.Format("        ForwardLeft  {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Move_ForwardLeft"],  moveActionCount, (float)rover.MoveBreakdown["Move_ForwardLeft"]  / moveActionCount * 100f));
-            t.Add(String.Format("        ForwardRight {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Move_ForwardRight"], moveActionCount, (float)rover.MoveBreakdown["Move_ForwardRight"] / moveActionCount * 100f));
-
-            // Rotate
-            var rotateActionCount = rover.MoveBreakdown["Rotate_Left"]
-                                  + rover.MoveBreakdown["Rotate_Right"];
-            t.Add("    Rotate: " + rotateActionCount);
-            len = Utils.digitsIn(rotateActionCount);
-            t.Add(String.Format("        Left  {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Rotate_Left"],  rotateActionCount, (float)rover.MoveBreakdown["Rotate_Left"]  / rotateActionCount * 100f));
-            t.Add(String.Format("        Right {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Rotate_Right"], rotateActionCount, (float)rover.MoveBreakdown["Rotate_Right"] / rotateActionCount * 100f));
-
-            // Revert
-            var revertActionCount = rover.MoveBreakdown["Revert_Move"]
-                                  + rover.MoveBreakdown["Revert_Rotate"];
-            t.Add("    Revert: " + revertActionCount);
-            len = Utils.digitsIn(revertActionCount);
-            t.Add(String.Format("        Move   {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Revert_Move"],   revertActionCount, (float)rover.MoveBreakdown["Revert_Move"]   / revertActionCount * 100f));
-            t.Add(String.Format("        Rotate {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Revert_Rotate"], revertActionCount, (float)rover.MoveBreakdown["Revert_Rotate"] / revertActionCount * 100f));
-            t.Add("______________________________________________________________");
-
-            // Environment Breakdown--------------------------------------------
-            t.Add("Environment:");
-            //WISE 0855−0714 
-            var randomPlanet = Utils.randomString(Utils.upperChars, 4) + " "
-                + Utils.randomString(Utils.alphaChars, 4) + "-"
-                + Utils.randomString(Utils.alphaChars, 4);
-            var randomSector = Utils.randomString(Utils.upperChars, 3) + " "
-                + Utils.randomString(Utils.alphaChars, 2) + "."
-                + Utils.randomString(Utils.alphaChars, 2) + "."
-                + Utils.randomString(Utils.alphaChars, 3);
-
-            // Categorize Cells detected.
-            var detectObstacleCount = 0;
-            var detectNonObstacleCount = 0;
-            foreach (Cell cell in rover.DetectedCells)
+            else
             {
-                // Discount buffer Cells.
-                if (cell.x > 0 && cell.x < grid.width &&
-                    cell.y > 0 && cell.y < grid.height)
+                t.Add("Result: " + result);
+                t.Add("");
+                t.Add("Total Moves: " + rover.MoveCount);
+                t.Add("");
+
+                // Algorithm Comparison --------------------------------------------
+                t.Add("Least Possible Moves:");
+                t.Add("                               Rover");
+                t.Add("Algo   | Heuristic | Moves | Efficiency");
+
+                var heuristics = new Dictionary<string, AStarSearch.DistanceHeuristic>();
+                heuristics.Add("Chebyshev", Utils.ChebyshevDistance);
+                heuristics.Add("Manhattan", Utils.ManhattanDistance);
+                heuristics.Add("None", Utils.ZeroDistance);
+
+                // Run A*+ Search for each Heuristic.
+                foreach (KeyValuePair<string, AStarSearch.DistanceHeuristic> heuristic in heuristics)
                 {
-                    if (cell.type == Cell.Type.Floor)
+                    var startFacing = rover.ActionHistory.Peek().Facing;
+                    var aStarSearch = new AStarSearch(grid, grid.startPosition,
+                        startFacing, grid.goalPosition, new Stack<Rover.MoveRecord>(), heuristic.Value);
+                    var shortestPath = aStarSearch.GetShortestPath();
+                    var efficiency = (float)shortestPath.Count / (float)rover.MoveCount;
+                    t.Add(String.Format("A*+    | {0,9} | {1,4}  |  {2,6:0.00}%", heuristic.Key, shortestPath.Count, efficiency * 100f));
+                }
+                t.Add("______________________________________________________________");
+
+                // Action Breakdown ------------------------------------------------
+                t.Add("Action Breakdown:");
+                var moveActionCount = rover.MoveBreakdown["Move_Forward"]
+                                    + rover.MoveBreakdown["Move_ForwardLeft"]
+                                    + rover.MoveBreakdown["Move_ForwardRight"];
+                // Move
+                t.Add("    Move: " + moveActionCount);
+                var len = Utils.digitsIn(moveActionCount);
+                t.Add(String.Format("        Forward      {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Move_Forward"], moveActionCount, (float)rover.MoveBreakdown["Move_Forward"] / moveActionCount * 100f));
+                t.Add(String.Format("        ForwardLeft  {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Move_ForwardLeft"], moveActionCount, (float)rover.MoveBreakdown["Move_ForwardLeft"] / moveActionCount * 100f));
+                t.Add(String.Format("        ForwardRight {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Move_ForwardRight"], moveActionCount, (float)rover.MoveBreakdown["Move_ForwardRight"] / moveActionCount * 100f));
+
+                // Rotate
+                var rotateActionCount = rover.MoveBreakdown["Rotate_Left"]
+                                      + rover.MoveBreakdown["Rotate_Right"];
+                t.Add("    Rotate: " + rotateActionCount);
+                len = Utils.digitsIn(rotateActionCount);
+                t.Add(String.Format("        Left  {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Rotate_Left"], rotateActionCount, (float)rover.MoveBreakdown["Rotate_Left"] / rotateActionCount * 100f));
+                t.Add(String.Format("        Right {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Rotate_Right"], rotateActionCount, (float)rover.MoveBreakdown["Rotate_Right"] / rotateActionCount * 100f));
+
+                // Revert
+                var revertActionCount = rover.MoveBreakdown["Revert_Move"]
+                                      + rover.MoveBreakdown["Revert_Rotate"];
+                t.Add("    Revert: " + revertActionCount);
+                len = Utils.digitsIn(revertActionCount);
+                t.Add(String.Format("        Move   {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Revert_Move"], revertActionCount, (float)rover.MoveBreakdown["Revert_Move"] / revertActionCount * 100f));
+                t.Add(String.Format("        Rotate {0," + len + "}/{1} ({2:0.00}%)", rover.MoveBreakdown["Revert_Rotate"], revertActionCount, (float)rover.MoveBreakdown["Revert_Rotate"] / revertActionCount * 100f));
+                t.Add("______________________________________________________________");
+
+                // Environment Breakdown--------------------------------------------
+                t.Add("Environment:");
+                //WISE 0855−0714 
+                var randomPlanet = Utils.randomString(Utils.upperChars, 4) + " "
+                    + Utils.randomString(Utils.alphaChars, 4) + "-"
+                    + Utils.randomString(Utils.alphaChars, 4);
+                var randomSector = Utils.randomString(Utils.upperChars, 3) + " "
+                    + Utils.randomString(Utils.alphaChars, 2) + "."
+                    + Utils.randomString(Utils.alphaChars, 2) + "."
+                    + Utils.randomString(Utils.alphaChars, 3);
+
+                // Categorize Cells detected.
+                int totalCellsDetected;
+                int totalObstaclesDetected;
+                rover.CategorizeCellsDetected(out totalCellsDetected, out totalObstaclesDetected);
+                var detectedObstacleDensity = (float)totalObstaclesDetected / (float)totalCellsDetected;
+
+                t.Add("    Planet: " + randomPlanet);
+                t.Add("    Sector: " + randomSector);
+                t.Add("    Dimensions:");
+                t.Add("        Width    - " + grid.width + "m");
+                t.Add("        Height   - " + grid.height + "m");
+                t.Add("        Area     - " + grid.width * grid.height + "m^2");
+                t.Add(String.Format("        Explored - {0}m^2 ({1:0.00}%)", totalCellsDetected, (float)totalCellsDetected / (grid.width * grid.height) * 100f));
+
+                t.Add("    Obstructions:");
+                t.Add("        Encountered      - " + totalObstaclesDetected);
+                t.Add(String.Format("        Observed Density - {0:0.00}/m^2 " +
+                    "({1:0.00}%)",
+                    detectedObstacleDensity, detectedObstacleDensity * 100));
+                t.Add(String.Format("        Actual   Density - {0:0.00}/m^2 " +
+                    "({1:0.00}%)",
+                    grid.obstacleDensity, grid.obstacleDensity * 100f));
+                t.Add("______________________________________________________________");
+
+                // Environment Map -------------------------------------------------
+                t.Add("Environment Map:");
+                var environmentMap = grid.ToImage();
+                environmentMap[(int)grid.startPosition.x, (int)grid.startPosition.y]
+                    = 'R';
+                environmentMap[(int)grid.goalPosition.x, (int)grid.goalPosition.y]
+                    = 'G';
+
+                for (int y = 0; y < environmentMap.GetLength(1); ++y)
+                {
+                    var line = "";
+                    for (int x = 0; x < environmentMap.GetLength(0); ++x)
                     {
-                        ++detectNonObstacleCount;
+                        line += environmentMap[x, y];
                     }
-                    else
+                    t.Add(line);
+                }
+
+                // Database Map ----------------------------------------------------
+                t.Add("");
+                t.Add("Rover Database Map:");
+                var databaseMap = rover.Grid.ToImage();
+                databaseMap[(int)grid.goalPosition.x, (int)grid.goalPosition.y]
+                    = 'G';
+
+                for (int y = 0; y < databaseMap.GetLength(1); ++y)
+                {
+                    var line = "";
+                    for (int x = 0; x < databaseMap.GetLength(0); ++x)
                     {
-                        ++detectObstacleCount;
+                        line += databaseMap[x, y];
+                    }
+                    t.Add(line);
+                }
+
+                // Locations Visited Map -------------------------------------------
+                t.Add("");
+                t.Add("Locations Visited:");
+                for (int y = 1; y < databaseMap.GetLength(1) - 1; ++y)
+                {
+                    for (int x = 1; x < databaseMap.GetLength(0) - 1; ++x)
+                    {
+                        databaseMap[x, y] = '.';
                     }
                 }
-            }
-            var totalCellsDetected = detectObstacleCount + detectNonObstacleCount;
-            var detectedObstacleDensity = (float)detectObstacleCount
-                / (float)totalCellsDetected;
 
-            t.Add("    Planet: " + randomPlanet);
-            t.Add("    Sector: " + randomSector);
-            t.Add("    Dimensions:");
-            t.Add("        Width    - " + grid.width + "m");
-            t.Add("        Height   - " + grid.height + "m");
-            t.Add("        Area     - " + grid.width * grid.height + "m^2");
-            t.Add(String.Format("        Explored - {0}m^2 ({1:0.00}%)", totalCellsDetected, (float)totalCellsDetected / (grid.width * grid.height) * 100f));
-
-            t.Add("    Obstructions:");
-            t.Add("        Encountered      - " + detectObstacleCount);
-            t.Add(String.Format("        Observed Density - {0:0.00}/m^2 " +
-                "({1:0.00}%)",
-                detectedObstacleDensity, detectedObstacleDensity * 100));
-            t.Add(String.Format("        Actual   Density - {0:0.00}/m^2 " +
-                "({1:0.00}%)",
-                grid.obstacleDensity, grid.obstacleDensity * 100f));
-            t.Add("______________________________________________________________");
-
-            // Environment Map -------------------------------------------------
-            t.Add("Environment Map:");
-            var environmentMap = grid.ToImage();
-            environmentMap[(int)grid.startPosition.x, (int)grid.startPosition.y]
-                = 'R';
-            environmentMap[(int)grid.goalPosition.x, (int)grid.goalPosition.y]
-                = 'G';
-
-            for (int y = 0; y < environmentMap.GetLength(1); ++y)
-            {
-                var line = "";
-                for (int x = 0; x < environmentMap.GetLength(0); ++x)
+                foreach (Rover.ActionRecord action in rover.ActionHistory)
                 {
-                    line += environmentMap[x, y];
+                    databaseMap[(int)action.Position.x, (int)action.Position.y] = 'R';
                 }
-                t.Add(line);
-            }
 
-            // Database Map ----------------------------------------------------
-            t.Add("");
-            t.Add("Rover Database Map:");
-            var databaseMap = rover.Grid.ToImage();
-            databaseMap[(int)grid.goalPosition.x, (int)grid.goalPosition.y]
-                = 'G';
-
-            for (int y = 0; y < databaseMap.GetLength(1); ++y)
-            {
-                var line = "";
-                for (int x = 0; x < databaseMap.GetLength(0); ++x)
+                for (int y = 0; y < databaseMap.GetLength(1); ++y)
                 {
-                    line += databaseMap[x, y];
+                    var line = "";
+                    for (int x = 0; x < databaseMap.GetLength(0); ++x)
+                    {
+                        line += databaseMap[x, y];
+                    }
+                    t.Add(line);
                 }
-                t.Add(line);
-            }
+                t.Add("______________________________________________________________");
 
-            // Locations Visited Map -------------------------------------------
-            t.Add("");
-            t.Add("Locations Visited:");
-            for (int y = 1; y < databaseMap.GetLength(1) -1 ; ++y)
-            {
-                for (int x = 1; x < databaseMap.GetLength(0) - 1; ++x)
+                // Path Taken ------------------------------------------------------
+                t.Add("Path Taken:");
+                var lenM = Utils.digitsIn(rover.MoveCount);
+                var lenX = Utils.digitsIn(grid.width);
+                var lenY = Utils.digitsIn(grid.height);
+                t.Add("Move Action    Path    Facing");
+                var moveCount = 0;
+                while (rover.ActionHistory.Count > 0)
                 {
-                    databaseMap[x, y] = '.';
+                    var action = rover.ActionHistory.Dequeue();
+                    t.Add(String.Format("[{0," + lenM + "}] {1,-6} -> [{2," + lenX
+                        + "},{3," + lenY + "}] {4}", moveCount,
+                        action.Action.ToString(), action.Position.x,
+                        action.Position.y, action.Facing));
+                    ++moveCount;
                 }
+                t.Add("-----> " + result);
+                t.Add("");
             }
-
-            foreach (Rover.ActionRecord action in rover.ActionHistory)
-            {
-                databaseMap[(int)action.Position.x, (int)action.Position.y] = 'R';
-            }
-
-            for (int y = 0; y < databaseMap.GetLength(1); ++y)
-            {
-                var line = "";
-                for (int x = 0; x < databaseMap.GetLength(0); ++x)
-                {
-                    line += databaseMap[x, y];
-                }
-                t.Add(line);
-            }
-            t.Add("______________________________________________________________");
-
-            // Path Taken ------------------------------------------------------
-            t.Add("Path Taken:");
-            var lenM = Utils.digitsIn(rover.MoveCount);
-            var lenX = Utils.digitsIn(grid.width);
-            var lenY = Utils.digitsIn(grid.height);
-            t.Add("Move Action    Path    Facing");
-            var moveCount = 0;
-            while (rover.ActionHistory.Count > 0)
-            {
-                var action = rover.ActionHistory.Dequeue();
-                t.Add(String.Format("[{0," + lenM + "}] {1,-6} -> [{2," + lenX 
-                    + "},{3," + lenY + "}] {4}", moveCount, 
-                    action.Action.ToString(), action.Position.x,
-                    action.Position.y, action.Facing));
-                ++moveCount;
-            }
-            t.Add("-----> " + result);
-            t.Add("");
 
             Console.WriteLine(Environment.NewLine + "Results output to: " + outputFilename);
             System.IO.File.WriteAllLines(outputFilename, t);

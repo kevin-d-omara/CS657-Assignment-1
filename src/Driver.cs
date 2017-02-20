@@ -26,6 +26,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                         args.Remove(arg);
                         SimulationManager.flags["automatic"] = true;
                         break;
+                    case "-c":
+                    case "--concise":
+                        args.Remove(arg);
+                        SimulationManager.flags["concise"] = true;
+                        break;
                     case "-d":
                     case "--display":
                         args.Remove(arg);

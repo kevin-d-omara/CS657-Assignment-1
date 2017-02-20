@@ -397,8 +397,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("Enter the filename including extension");
             Console.WriteLine("(i.e. Test1.map or Test1.txt): ");
             string filename = Console.ReadLine();
+
+            #pragma warning disable 219
             string[] map = System.IO.File.ReadAllLines(filename);
-            
+            #pragma warning restore 219
+
             return new GridParameters();
         }
 

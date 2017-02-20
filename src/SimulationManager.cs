@@ -330,10 +330,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             Console.WriteLine("Goal  Position (x y): ");
             Console.WriteLine("Obstacle Density (0.0 to 1.0): ");
             Console.WriteLine("Obstacle Types (y or n):");
-            Console.WriteLine("                Wall - ");
-            Console.WriteLine("                Pit  - ");
+            Console.WriteLine("                Wall   - ");
+            Console.WriteLine("                Pit    - ");
+            Console.WriteLine("                Shroud - ");
 
-            Console.SetCursorPosition(7, Console.CursorTop - 8);
+            Console.SetCursorPosition(7, Console.CursorTop - 9);
             gridParams.width = Convert.ToInt32(Console.ReadLine());
 
             Console.SetCursorPosition(8, Console.CursorTop);
@@ -357,17 +358,23 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
             // Choose Obstacle Types
             gridParams.obstacleTypes = new List<Cell.Type>();
-            Console.SetCursorPosition(23, Console.CursorTop + 1);
+            Console.SetCursorPosition(25, Console.CursorTop + 1);
             char choice = Convert.ToChar(Console.ReadLine());
             if (choice == 'y' || choice == 'Y')
             {
                 gridParams.obstacleTypes.Add(Cell.Type.Wall);
             }
-            Console.SetCursorPosition(23, Console.CursorTop);
+            Console.SetCursorPosition(25, Console.CursorTop);
             choice = Convert.ToChar(Console.ReadLine());
             if (choice == 'y' || choice == 'Y')
             {
                 gridParams.obstacleTypes.Add(Cell.Type.Pit);
+            }
+            Console.SetCursorPosition(25, Console.CursorTop);
+            choice = Convert.ToChar(Console.ReadLine());
+            if (choice == 'y' || choice == 'Y')
+            {
+                gridParams.obstacleTypes.Add(Cell.Type.Shroud);
             }
 
             return gridParams;

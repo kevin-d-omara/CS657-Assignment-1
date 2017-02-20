@@ -13,11 +13,12 @@ DESCRIPTION
     The contents must be a rectangular array of letters and/or numbers.
     
     Specify elements of the map with the following glyphs:
-        Floor -> '.' or '1'
-        Wall  -> 'X' or '0'
-        Pit   -> 'O' or '2' or '-'
-        Start -> 'R' or '8'
-        Goal - > 'G' or '9'
+        Floor  -> '.' or '1'
+        Wall   -> 'X' or '0'
+        Pit    -> 'O' or '2' or '-'
+		Shroud -> 'S' or '3'
+        Start  -> 'R' or '8'
+        Goal -  > 'G' or '9'
         
     Both the start position ('R'/'8') and the goal position ('G'/'9') may be
     omitted. In this case, the start position will be [6,6] and the goal
@@ -27,7 +28,7 @@ DESCRIPTION
     R.X..O      810112      R.X..O
     ...X.X  or  111010  or  11.0.X
     XO.X..      021011      X2.X..
-    .X...G      101119      .01..9
+    .S...G      131119      .03..9
     
     If no filename is specified, an environment is created through user input.
     The user is offered two options: default and manual.
@@ -46,7 +47,7 @@ DESCRIPTION
         start  = [?,?]
         goal   = [?,?]
         obstacle density = ?
-        obstacle types = [wall, pit]
+        obstacle types = [wall, pit, shroud]
     
     Computes the path a Rover takes from some starting position to a goal
     position.

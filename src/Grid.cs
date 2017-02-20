@@ -72,6 +72,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             var obstacleTypesFound = new Dictionary<Cell.Type, bool>();
             obstacleTypesFound.Add(Cell.Type.Wall, false);
             obstacleTypesFound.Add(Cell.Type.Pit, false);
+            obstacleTypesFound.Add(Cell.Type.Shroud, false);
 
             for (int y = 1; y <= height; ++y)
             {
@@ -92,6 +93,13 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                         ++obstacleCount;
                         Position[x, y] = new Cell(Cell.Type.Pit, x, y);
                         obstacleTypesFound[Cell.Type.Pit] = true;
+                    }
+                    // Pit
+                    else if (cell == '3' || cell == 'S')
+                    {
+                        ++obstacleCount;
+                        Position[x, y] = new Cell(Cell.Type.Shroud, x, y);
+                        obstacleTypesFound[Cell.Type.Shroud] = true;
                     }
                     // Rover
                     else if (cell == '8' || cell == 'R')

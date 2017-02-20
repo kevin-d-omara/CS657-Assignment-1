@@ -6,7 +6,7 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
     // A Cell represents a single square on the grid
     public class Cell
     {
-        public enum Type { Floor, Wall, Pit };
+        public enum Type { Floor, Wall, Pit, Shroud };
 
         public readonly Type type;
         public readonly bool blocksMove;
@@ -34,6 +34,11 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     blocksMove = true;
                     blocksSonar = false;
                     image = 'O';
+                    break;
+                case Type.Shroud:
+                    blocksMove = false;
+                    blocksSonar = true;
+                    image = 'S';
                     break;
                 default:
                     throw new System.ArgumentException("Unsupported Cell.Type");

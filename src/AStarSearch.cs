@@ -101,7 +101,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                     var priorCell = grid.Position[(int)priorMove.Position.x,
                         (int)priorMove.Position.y];
 
-                    if(nodes.TryGetValue(priorCell, out Node priorNode))
+                    Node priorNode;
+                    if(nodes.TryGetValue(priorCell, out priorNode))
                     {
                         // TODO - handle this case
                     }
@@ -132,7 +133,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
                 var rearCell = grid.Position[(int)rearPos.x, (int)rearPos.y];
                 if (!rearCell.blocksMove)
                 {
-                    if (nodes.TryGetValue(rearCell, out Node rearNode))
+                    Node rearNode;
+                    if (nodes.TryGetValue(rearCell, out rearNode))
                     { }
                     else
                     {
@@ -169,7 +171,8 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
 
                         if (nextCell.blocksMove) { continue; }
 
-                        if (nodes.TryGetValue(nextCell, out Node nextNode))
+                        Node nextNode;
+                        if (nodes.TryGetValue(nextCell, out nextNode))
                         { }
                         else
                         {
@@ -230,8 +233,9 @@ namespace KevinDOMara.SDSU.CS657.Assignment1
             var shortestPath = new Stack<Node>();
 
             // Start with goal Node.
+            Node nextNode;
             if (nodes.TryGetValue(grid.Position[(int)goal.x, (int)goal.y],
-                out Node nextNode))
+                out nextNode))
             { }
             // Exit early if goal wasn't reached.
             else

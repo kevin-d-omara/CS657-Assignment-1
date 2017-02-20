@@ -1,5 +1,5 @@
 ﻿using System;
-using System​.Numerics;
+//using System​.Numerics;
 using System.Collections.Generic;
 
 namespace KevinDOMara.SDSU.CS657.Assignment1
